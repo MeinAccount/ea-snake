@@ -31,12 +31,9 @@ class GameState:
             self.positions.pop()
 
         # check for self intersection
-        if new_pos in self.positions:
-            return False
-
-        # insert new pos
+        self_intersection = new_pos in self.positions
         self.positions.insert(0, new_pos)
-        return True
+        return not self_intersection
 
     def apple_replace(self):
         self.apple_pos = (random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT))
