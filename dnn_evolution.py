@@ -1,0 +1,5 @@
+
+
+class DNNEvolution:
+    model = None
+
