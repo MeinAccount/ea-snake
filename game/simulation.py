@@ -8,7 +8,7 @@ from render import SimpleHandler
 model = DeepNeuralNetModel()
 
 
-def compute_with_dnn(cromo) -> float:
+def dnn_to_handler(cromo) -> Callable[[GameState], int]:
     model.set_weights(cromo)
 
     def dnn_handler(state: GameState) -> int:
@@ -18,7 +18,7 @@ def compute_with_dnn(cromo) -> float:
         action = model.predict(angle, neighbours_free)
         return (state.direction + action) % 4
 
-    return compute_score(dnn_handler)
+    return dnn_handler
 
 
 def compute_score(step_handler: Callable[[GameState], int]) -> float:

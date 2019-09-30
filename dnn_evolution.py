@@ -4,7 +4,7 @@ import random
 import numpy as np
 
 from constants import Constants
-from game.simulation import compute_with_dnn
+from game.simulation import dnn_to_handler, compute_score
 from model import DeepNeuralNetModel
 
 
@@ -38,12 +38,15 @@ class DNNGeneticEvolutionTrainer:
             # 1. Selection
             chosen_parents = self._strongest_parents(population)
 
+            # show the best
+            from render import App
+            app = App(dnn_to_handler(chosen_parents[-1][0]))
+            app.on_execute()
 
             # get n possible combinations
-
             # 2. Crossover (Rank selection)
-            pairs = self._get_n_generations(chosen_parents, population_size-self.parents)
-            #random.shuffle(pairs)
+            pairs = self._get_n_generations(chosen_parents, population_size - self.parents)
+            # random.shuffle(pairs)
 
             base_offsprings = []
             for pair in pairs[:self.population_size]:
@@ -99,7 +102,7 @@ class DNNGeneticEvolutionTrainer:
     def _strongest_parents(self, population):
         scores_for_chromosomes = []
         for chromo in population:
-            score = compute_with_dnn(chromo)
+            score = compute_score(dnn_to_handler(chromo))
             scores_for_chromosomes.append((chromo, score))
             print(score)
 

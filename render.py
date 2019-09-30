@@ -1,7 +1,7 @@
 from typing import Callable
 
 import pygame
-from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT
+from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT, USEREVENT, K_p
 
 from game.direction import GRID_WIDTH, GRID_HEIGHT
 from game.state import GameState
@@ -52,16 +52,23 @@ class App:
             self._display_surf.blit(self._image_surf, (x * 10, y * 10))
         pygame.display.flip()
 
+    EVENT_TICK = USEREVENT + 1
+
     def on_execute(self):
         self.on_init()
+        pygame.time.set_timer(self.EVENT_TICK, 100)
+
         running = True
+        playing = False
         while running:
             self.on_render()
             event = pygame.event.wait()
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 running = False
-            elif event.type == KEYDOWN and event.key == K_SPACE:
+            elif (event.type == KEYDOWN and event.key == K_SPACE) or (event.type == self.EVENT_TICK and playing):
                 running = self.on_loop()
+            elif event.type == KEYDOWN and event.key == K_p:
+                playing = not playing
 
         pygame.quit()
 
