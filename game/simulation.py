@@ -23,17 +23,17 @@ def dnn_to_handler(cromo) -> Callable[[GameState], int]:
 
 def compute_score(step_handler: Callable[[GameState], int]) -> float:
     state = GameState((20, 20))
-    reward = 0
+    # reward = 0
     step_count = 0
     while step_count <= 1000:
         state.direction = step_handler(state)
         if not state.move():
-            return reward
+            return state.length
 
-        reward += state.length
+        # reward += state.length
         step_count += 1
 
-    return reward
+    return state.length
 
 
 if __name__ == '__main__':

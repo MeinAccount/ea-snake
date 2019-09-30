@@ -6,6 +6,7 @@ import numpy as np
 from constants import Constants
 from game.simulation import dnn_to_handler, compute_score
 from model import DeepNeuralNetModel
+from render import App
 
 
 from typing import Dict, Tuple, Sequence
@@ -42,7 +43,6 @@ class DNNGeneticEvolutionTrainer:
             chosen_parents = self._strongest_parents(population)
 
             # show the best
-            from render import App
             app = App(dnn_to_handler(chosen_parents[-1][0]))
             app.on_execute()
 
