@@ -62,8 +62,7 @@ class App:
 
 
 class SimpleHandler:
-    # directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
-    directions = [0]
+    directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
     index = 0
 
     def handle(self, snake, apple):
