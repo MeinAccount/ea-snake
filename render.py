@@ -3,7 +3,8 @@ from typing import Callable
 import pygame
 from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT
 
-from game.data import Snake, Apple, GRID_HEIGHT, GRID_WIDTH
+from game.data import Snake, Apple
+from game.direction import GRID_WIDTH, GRID_HEIGHT
 
 
 class App:

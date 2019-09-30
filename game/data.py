@@ -1,9 +1,6 @@
 import random
 
-from game.direction import Directions
-
-GRID_WIDTH = 50
-GRID_HEIGHT = 50
+from game.direction import Directions, GRID_WIDTH, GRID_HEIGHT
 
 
 class Apple:
