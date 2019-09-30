@@ -14,8 +14,9 @@ class App:
     def __init__(self, step_handler: Callable[[Snake, Apple], int]) -> None:
         self.step_handler = step_handler
 
-        self.apple = Apple()
         self.snake = Snake((20, 20))
+        self.apple = Apple()
+        self.apple.pos = (22, 20)
 
     def on_init(self):
         pygame.init()
@@ -35,10 +36,8 @@ class App:
 
         # move
         if not self.snake.move(self.apple):
-            print("self intersection!!!")
+            print("self or border intersection")
             return False
-
-        # TODO: check for edges
 
         return True
 
@@ -63,7 +62,8 @@ class App:
 
 
 class SimpleHandler:
-    directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+    # directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+    directions = [0]
     index = 0
 
     def handle(self, snake, apple):
