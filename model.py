@@ -1,11 +1,12 @@
+import os
+
 import numpy as np
 import tflearn
 from tflearn import input_data, fully_connected, regression
 
 from constants import Constants
 
-
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # Disables TF warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Disables TF warnings
 
 
 class DeepNeuralNetModel:
@@ -14,17 +15,6 @@ class DeepNeuralNetModel:
     hidden_node_neurons = Constants.MODEL_FEATURE_COUNT * Constants.MODEL_LAYER_COUNT ** 2
 
     def __init__(self):
-        # self.model = keras.Sequential([
-        #     keras.layers.Dense(Constants.MODEL_LAYER_COUNT, activation='relu',
-        #                        input_shape=Constants.MODEL_FEATURE_COUNT),
-        #     keras.layers.Dense(Constants.MODEL_LAYER_COUNT, activation='relu'),
-        #     keras.layers.Dense(Constants.MODEL_LAYER_COUNT, activation='relu'),
-        #     keras.layers.Dense(3, activation='softmax')
-        # ])
-        # self.model.compile(optimizer='adam',
-        #                    loss='sparse_categorical_crossentropy',
-        #                    metrics=['accuracy'])
-
         network = input_data(shape=[None, Constants.MODEL_FEATURE_COUNT, 1])
         self.hidden = network = fully_connected(network, self.hidden_node_neurons, activation='relu6')
         network = fully_connected(network, 3, activation='linear')

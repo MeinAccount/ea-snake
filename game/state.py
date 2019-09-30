@@ -5,12 +5,12 @@ from game.direction import Directions, GRID_WIDTH, GRID_HEIGHT
 
 class GameState:
     apple_pos = (0, 0)
-    positions = []
+    positions = None
     direction = 0
 
     def __init__(self, start_pos, length=3) -> None:
         self.length = length
-        self.positions.append(start_pos)
+        self.positions = [start_pos]
         for i in range(1, length):
             self.positions.append(Directions.apply(2, self.positions[i - 1]))
 
