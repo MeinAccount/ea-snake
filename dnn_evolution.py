@@ -53,7 +53,7 @@ class DNNGeneticEvolutionTrainer:
             # 3. Mutation
             new_population = self._mutation(base_offsprings)
             population = new_population
-            population.extend(chosen_parents)
+            population.extend(map(lambda t: t[0], chosen_parents))
             self.generation += 1
 
             # self._save_population()
