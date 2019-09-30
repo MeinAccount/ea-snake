@@ -12,7 +12,7 @@ class DNNGeneticEvolutionTrainer:
     generation = 0
     selection_rate = 0.1
     mutation_rate = 0.01
-    population_size = 1000
+    population_size = 100
     parents = int(population_size * selection_rate)
 
     def _save_population(self, population):
@@ -86,7 +86,9 @@ class DNNGeneticEvolutionTrainer:
     def _strongest_parents(self, population):
         scores_for_chromosomes = []
         for chromo in population:
-            scores_for_chromosomes.append((chromo, compute_with_dnn(chromo)))
+            score = compute_with_dnn(chromo)
+            scores_for_chromosomes.append((chromo, score))
+            print(score)
 
         scores_for_chromosomes.sort(key=lambda x: x[1])
 

@@ -1,6 +1,6 @@
+import numpy as np
 import tflearn
-from tflearn.layers.core import input_data, fully_connected
-from tflearn.layers.estimator import regression
+from tflearn import input_data, fully_connected, regression
 
 from constants import Constants
 
@@ -11,16 +11,25 @@ from constants import Constants
 class DeepNeuralNetModel:
     # __metaclass__ = Singleton
     hidden = None
-    hidden_node_neurons = Constants.MODEL_FEATURE_COUNT ** 3
+    hidden_node_neurons = Constants.MODEL_FEATURE_COUNT * Constants.MODEL_LAYER_COUNT ** 2
 
     def __init__(self):
+        # self.model = keras.Sequential([
+        #     keras.layers.Dense(Constants.MODEL_LAYER_COUNT, activation='relu',
+        #                        input_shape=Constants.MODEL_FEATURE_COUNT),
+        #     keras.layers.Dense(Constants.MODEL_LAYER_COUNT, activation='relu'),
+        #     keras.layers.Dense(Constants.MODEL_LAYER_COUNT, activation='relu'),
+        #     keras.layers.Dense(3, activation='softmax')
+        # ])
+        # self.model.compile(optimizer='adam',
+        #                    loss='sparse_categorical_crossentropy',
+        #                    metrics=['accuracy'])
+
         network = input_data(shape=[None, Constants.MODEL_FEATURE_COUNT, 1])
         self.hidden = network = fully_connected(network, self.hidden_node_neurons, activation='relu6')
-        network = fully_connected(network, 1, activation='linear')
+        network = fully_connected(network, 3, activation='linear')
         network = regression(network, optimizer='adam', loss='mean_square')
         self.model = tflearn.DNN(network)
-        # if os.path.isfile(self.dnn_model_file_name+".index"):
-        #     self.model.load(self.dnn_model_file_name)
 
     def save(self, path):
         self.model.save(path)
@@ -40,4 +49,5 @@ class DeepNeuralNetModel:
         :param neighbours_free: list of three bools denoting [left free, forward free, right free]
         :return: direction with (left: -1, forward: 0, right: 1)
         """
-        return 0
+        pred = self.model.predict(np.array([angle, *neighbours_free]).reshape((1, 4, 1)))
+        return np.argmax(pred) - 1
