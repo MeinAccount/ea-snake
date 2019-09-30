@@ -1,7 +1,7 @@
 from typing import Callable
 
 import pygame
-from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT, USEREVENT, K_p
+from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT, USEREVENT, K_p, K_r
 
 from game.direction import GRID_WIDTH, GRID_HEIGHT
 from game.state import GameState
@@ -65,10 +65,15 @@ class App:
             event = pygame.event.wait()
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 running = False
-            elif (event.type == KEYDOWN and event.key == K_SPACE) or (event.type == self.EVENT_TICK and playing):
-                running = self.on_loop()
+            elif event.type == KEYDOWN and event.key == K_SPACE:
+                self.on_loop()
+            elif event.type == self.EVENT_TICK and playing:
+                playing = self.on_loop()
             elif event.type == KEYDOWN and event.key == K_p:
                 playing = not playing
+            elif event.type == KEYDOWN and event.key == K_r:
+                self.state = GameState((20, 20))
+                self.state.apple_pos = (22, 20)
 
         pygame.quit()
 
