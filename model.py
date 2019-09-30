@@ -17,7 +17,7 @@ class DeepNeuralNetModel:
     def __init__(self):
         network = input_data(shape=[None, Constants.MODEL_FEATURE_COUNT, 1])
         self.hidden = network = fully_connected(network, self.hidden_node_neurons, activation='relu6')
-        network = fully_connected(network, 3, activation='linear')
+        self.hidden2 = network = fully_connected(network, 3, activation='linear')
         network = regression(network, optimizer='adam', loss='mean_square')
         self.model = tflearn.DNN(network)
 
@@ -28,10 +28,11 @@ class DeepNeuralNetModel:
         self.model.load(path)
 
     def get_weights(self):
-        return self.model.get_weights(self.hidden.W)
+        return self.model.get_weights(self.hidden.W), self.model.get_weights(self.hidden2.W)
 
     def set_weights(self, weights):
-        self.model.set_weights(self.hidden.W, weights)
+        self.model.set_weights(self.hidden.W, weights[0])
+        self.model.set_weights(self.hidden2.W, weights[1])
 
     def predict(self, angle, neighbours_free):
         """

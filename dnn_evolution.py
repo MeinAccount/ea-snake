@@ -8,6 +8,9 @@ from game.simulation import dnn_to_handler, compute_score
 from model import DeepNeuralNetModel
 
 
+from typing import Dict, Tuple, Sequence
+
+
 class DNNGeneticEvolutionTrainer:
     generation = 0
     selection_rate = 0.1
@@ -54,9 +57,10 @@ class DNNGeneticEvolutionTrainer:
                 base_offsprings.append(self._crossover(pair[0][0], pair[1][0]))
 
             # 3. Mutation
-            new_population = self._mutation(base_offsprings)
-            population = new_population
-            population.extend(map(lambda t: t[0], chosen_parents))
+            self._mutation(base_offsprings)
+            #population = new_population
+            base_offsprings.extend(map(lambda t: t[0], chosen_parents))
+            population = base_offsprings
             self.generation += 1
 
             # self._save_population()
@@ -70,34 +74,54 @@ class DNNGeneticEvolutionTrainer:
 
         return combinations
 
-    def _combinations(self, parents):
-        combinations = []
-        for i in range(0, len(parents)):
-            for j in range(i, len(parents)):
-                combinations.append((parents[i], parents[j]))
-        return combinations
+    #def _combinations(self, parents):
+    #    combinations = []
+    #    for i in range(0, len(parents)):
+    #        for j in range(i, len(parents)):
+    #            combinations.append((parents[i], parents[j]))
+    #    return combinations
 
     @staticmethod
     def _crossover(x, y):
-        offspring = x
-        for i in range(0, Constants.MODEL_FEATURE_COUNT):
-            for j in range(0, DeepNeuralNetModel.hidden_node_neurons):
+        return (DNNGeneticEvolutionTrainer._crossover_array(x[0], y[0], Constants.MODEL_FEATURE_COUNT,
+                                                       DeepNeuralNetModel.hidden_node_neurons),
+                DNNGeneticEvolutionTrainer._crossover_array(x[1], y[1], DeepNeuralNetModel.hidden_node_neurons,
+                                                            3
+                                                       ))
+
+    @staticmethod
+    def _crossover_array(x, y, n, m):
+        """crosses two numpy arrays"""
+        offspring = copy.deepcopy(x)
+        for i in range(n):
+            for j in range(m):
                 if random.choice([True, False]):
                     offspring[i][j] = y[i][j]
         return offspring
 
     def _mutation(self, base_offsprings):
-        offsprings = []
+        #offsprings = []
         for offspring in base_offsprings:
-            offspring_mutation = copy.deepcopy(offspring)
-            for i in range(0, Constants.MODEL_FEATURE_COUNT):
-                for j in range(0, DeepNeuralNetModel.hidden_node_neurons):
-                    if np.random.choice([True, False], p=[self.mutation_rate, 1 - self.mutation_rate]):
-                        offspring_mutation[i][j] = random.uniform(-1, 1)
+            #offspring_mutation = copy.deepcopy(offspring)
+            #for i in range(0, Constants.MODEL_FEATURE_COUNT):
+            #    for j in range(0, DeepNeuralNetModel.hidden_node_neurons):
+            #        if np.random.choice([True, False], p=[self.mutation_rate, 1 - self.mutation_rate]):
+            #            offspring_mutation[i][j] = random.uniform(-1, 1)
+            (x, y) = offspring
+            self._mutate_array(x, Constants.MODEL_FEATURE_COUNT,
+                                                       DeepNeuralNetModel.hidden_node_neurons)
+            self._mutate_array(y, DeepNeuralNetModel.hidden_node_neurons,
+                               3,
+                               )
+            #offsprings.append(offspring_mutation)
 
-            offsprings.append(offspring_mutation)
+        #return offsprings
 
-        return offsprings
+    def _mutate_array(self, array, n, m):
+        for i in range(n):
+            for j in range(m):
+                if np.random.choice([True, False], p=[self.mutation_rate, 1 - self.mutation_rate]):
+                    array[i][j] =  random.uniform(-1, 1)
 
     def _strongest_parents(self, population):
         scores_for_chromosomes = []
@@ -117,21 +141,15 @@ class DNNGeneticEvolutionTrainer:
     def _initial_population(self):
         population = []
         for i in range(0, self.population_size):
-            chromo = []
-            for j in range(0, Constants.MODEL_FEATURE_COUNT):
-                chromo.append(self._random_chromosome(DeepNeuralNetModel.hidden_node_neurons))
-            population.append(chromo)
+            population.append((self._random_chromosome(Constants.MODEL_FEATURE_COUNT,
+                                                       DeepNeuralNetModel.hidden_node_neurons),
+                               self._random_chromosome(DeepNeuralNetModel.hidden_node_neurons, 3)))
 
         return population
 
     @staticmethod
-    def _random_chromosome(size):
-        chromosome = []
-        for i in range(0, size):
-            random_value = random.uniform(-1, 1)
-            chromosome.append(random_value)
-        return chromosome
-
+    def _random_chromosome(n, m):
+        return np.random.uniform(-1, 1, (n, m))
 
 if __name__ == '__main__':
     trainer = DNNGeneticEvolutionTrainer()
