@@ -50,11 +50,11 @@ def compute_normalized_angle(direction: int, snake: Tuple[int, int], apple: Tupl
     """
     # compute atan2 with apple rotated around snake for down direction
     if direction == Directions.RIGHT:
-        angle = math.atan2(-(apple[1] - snake[1]), apple[0] - snake[0])
+        angle = math.atan2(snake[1] - apple[1], apple[0] - snake[0])
     elif direction == Directions.UP:
-        angle = math.atan2(-(apple[0] - snake[0]), -(apple[1] - snake[1]))
+        angle = math.atan2(snake[0] - apple[0], snake[1] - apple[1])
     elif direction == Directions.LEFT:
-        angle = math.atan2(apple[1] - snake[1], -(apple[0] - snake[0]))
+        angle = math.atan2(apple[1] - snake[1], snake[0] - apple[0])
     elif direction == Directions.DOWN:
         angle = math.atan2(apple[0] - snake[0], apple[1] - snake[1])
 
