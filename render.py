@@ -1,8 +1,7 @@
-import time
 from typing import Callable
 
 import pygame
-from pygame.constants import K_ESCAPE
+from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT
 
 from data import Snake, Apple, GRID_HEIGHT, GRID_WIDTH
 
@@ -15,8 +14,9 @@ class App:
     def __init__(self, step_handler: Callable[[Snake, Apple], int]) -> None:
         self.step_handler = step_handler
 
-        self.apple = Apple()
         self.snake = Snake((20, 20))
+        self.apple = Apple()
+        self.apple.pos = (22, 20)
 
     def on_init(self):
         pygame.init()
@@ -36,10 +36,8 @@ class App:
 
         # move
         if not self.snake.move(self.apple):
-            print("self intersection!!!")
+            print("self or border intersection")
             return False
-
-        # TODO: check for edges
 
         return True
 
@@ -53,16 +51,13 @@ class App:
         self.on_init()
         running = True
         while running:
-            pygame.event.pump()
-            keys = pygame.key.get_pressed()
-
-            if keys[K_ESCAPE]:
+            self.on_render()
+            event = pygame.event.wait()
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 running = False
-            else:
+            elif event.type == KEYDOWN and event.key == K_SPACE:
                 running = self.on_loop()
 
-            self.on_render()
-            time.sleep(50.0 / 1000.0)
         pygame.quit()
 
 

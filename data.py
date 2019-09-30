@@ -52,13 +52,22 @@ class Snake:
 
     def move(self, apple: Apple) -> bool:
         new_pos = direction_apply(self.current_direction, self.pos[0])
+
+        # check for edge
+        if new_pos[0] == -1 or new_pos[0] == GRID_WIDTH or new_pos[1] == -1 or new_pos == GRID_HEIGHT:
+            return False
+
+        # check for apple
         if apple.pos == new_pos:
+            self.length += 1
             apple.replace()
         else:
             self.pos.pop()
 
+        # check for self intersection
         if new_pos in self.pos:
-            return False  # self intersection!
+            return False
 
+        # insert new pos
         self.pos.insert(0, new_pos)
         return True
