@@ -1,7 +1,7 @@
-import os
 import tflearn
 from tflearn.layers.core import input_data, fully_connected
 from tflearn.layers.estimator import regression
+
 from constants import Constants
 
 
@@ -9,12 +9,11 @@ from constants import Constants
 
 
 class DeepNeuralNetModel:
-    #__metaclass__ = Singleton
+    # __metaclass__ = Singleton
     hidden = None
     hidden_node_neurons = Constants.MODEL_FEATURE_COUNT ** 3
 
     def __init__(self):
-
         network = input_data(shape=[None, Constants.MODEL_FEATURE_COUNT, 1])
         self.hidden = network = fully_connected(network, self.hidden_node_neurons, activation='relu6')
         network = fully_connected(network, 1, activation='linear')
@@ -41,4 +40,4 @@ class DeepNeuralNetModel:
         :param neighbours_free: list of three bools denoting [left free, forward free, right free]
         :return: direction with (left: -1, forward: 0, right: 1)
         """
-        pass
+        return 0

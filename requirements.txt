@@ -1,4 +1,5 @@
 tflearn
+tensorflow
 pygame
 numpy
 
