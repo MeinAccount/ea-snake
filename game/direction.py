@@ -14,9 +14,13 @@ def compute_normalized_angle(direction: int, snake: Tuple[int, int], apple: Tupl
         The angle is relative to the current movement direction and normalized to [-1, 1]
     """
     # compute atan2 with apple rotated around snake for down direction
-    if direction == Directions.UP:
+    if direction == Directions.RIGHT:
+        angle = math.atan2(-(apple[1] - snake[1]), apple[0] - snake[0])
+    elif direction == Directions.UP:
         angle = math.atan2(-(apple[0] - snake[0]), -(apple[1] - snake[1]))
-    else:
+    elif direction == Directions.LEFT:
+        angle = math.atan2(apple[1] - snake[1], -(apple[0] - snake[0]))
+    elif direction == Directions.DOWN:
         angle = math.atan2(apple[0] - snake[0], apple[1] - snake[1])
 
     return angle / math.pi
