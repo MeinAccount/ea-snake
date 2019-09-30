@@ -6,7 +6,6 @@ import numpy as np
 from constants import Constants
 from game.simulation import dnn_to_handler, compute_score
 from model import DeepNeuralNetModel
-from render import App
 
 
 from typing import Dict, Tuple, Sequence
@@ -25,26 +24,16 @@ class DNNGeneticEvolutionTrainer:
             model.set_weights(i)
             model.save(Constants.MODEL_PATH.format(self.generation, hash(i)))
 
-    # def _show(self, best_cromo):
-    #     solver = DNNEvolutionSolver(best_cromo)
-    #     while True:
-    #         move = solver.move()
-
-    def _genetic_evolution(self):
+    def genetic_evolution(self, best_receiver=lambda x: None):
         population = self._initial_population()
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(
                 population_size) + ", mutation_rate: " + str(self.mutation_rate))
 
-            # TODO: is the population size constant?
-
             # 1. Selection
             chosen_parents = self._strongest_parents(population)
-
-            # show the best
-            app = App(dnn_to_handler(chosen_parents[-1][0]))
-            app.on_execute()
+            best_receiver(chosen_parents[-1][0])
 
             # get n possible combinations
             # 2. Crossover (Rank selection)
@@ -153,4 +142,4 @@ class DNNGeneticEvolutionTrainer:
 
 if __name__ == '__main__':
     trainer = DNNGeneticEvolutionTrainer()
-    trainer._genetic_evolution()
+    trainer.genetic_evolution()

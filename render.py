@@ -12,8 +12,10 @@ class App:
     windowHeight = GRID_HEIGHT * 10
 
     # step handler takes the snake and the apple and returns a new direction
-    def __init__(self, step_handler: Callable[[GameState], int]) -> None:
+    def __init__(self, step_handler: Callable[[GameState], int],
+                 tick_handler: Callable[[], None] = lambda: None) -> None:
         self.step_handler = step_handler
+        self.tick_handler = tick_handler
 
         self.state = GameState((20, 20))
         self.state.apple_pos = (22, 20)
@@ -67,8 +69,10 @@ class App:
                 running = False
             elif event.type == KEYDOWN and event.key == K_SPACE:
                 self.on_loop()
-            elif event.type == self.EVENT_TICK and playing:
-                playing = self.on_loop()
+            elif event.type == self.EVENT_TICK:
+                self.tick_handler()
+                if playing:
+                    playing = self.on_loop()
             elif event.type == KEYDOWN and event.key == K_p:
                 playing = not playing
             elif event.type == KEYDOWN and event.key == K_r:
