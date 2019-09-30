@@ -5,11 +5,19 @@ from model import DeepNeuralNetModel
 import numpy as np
 from constants import Constants
 
-class DNNEvolutionSolver:
-    model = DeepNeuralNetModel("/dnn_genetic_evolution/")
 
-    def __init__(self):
-        pass
+class Action:
+    LEFT = 0
+    AHEAD = 1
+    RIGHT = 2
+    ALL_ACTION = [LEFT, AHEAD, RIGHT]
+
+
+class DNNEvolutionSolver:
+    model = DeepNeuralNetModel()
+
+    def __init__(self, cromo):
+        self.model.set_weights(cromo)
 
     def move(self, environment):
         predicted_action = self._predict(environment, self.model)
@@ -18,18 +26,16 @@ class DNNEvolutionSolver:
     def _predict(self, environment, model):
         predictions = []
         # todo add action class
-        actions = [Action.left_neighbor(environment.snake_action), environment.snake_action,
-                   Action.right_neighbor(environment.snake_action)]
 
 
-        for action in actions:
+        for action in Action.ALL_ACTION:
             observation_for_prediction = environment.observation(action)
             predictions.append(
                 model.model.predict(np.array(observation_for_prediction).reshape(-1, Constants.MODEL_FEATURE_COUNT, 1))
             )
         best_prediction_index = np.argmax(np.array(predictions))
 
-        return actions[best_prediction_index]
+        return Action.ALL_ACTION[best_prediction_index]
 
 class DNNGeneticEvolutionTrainer:
     generation = 0
@@ -37,7 +43,18 @@ class DNNGeneticEvolutionTrainer:
     mutation_rate = 0.01
     population_size = 1000
     parents = int(population_size * selection_rate)
-    model = DeepNeuralNetModel("/dnn_genetic_evolution/")
+    model = DeepNeuralNetModel()
+
+    def _save_population(self, population):
+        for i in population:
+            self.model.set_weights(i)
+            self.model.save(Constants.MODEL_PATH.format(self.generation, hash(i)))
+
+    def _show(self, best_cromo):
+        solver = DNNEvolutionSolver(best_cromo)
+        while True:
+            move = solver.move()
+
 
     def _genetic_evolution(self):
         population = None
@@ -45,19 +62,14 @@ class DNNGeneticEvolutionTrainer:
             population_size = len(population) if population is not None else self.population_size
             print ("generation: " + str(self.generation) + ", population: " + str(population_size) + ", mutation_rate: " + str(self.mutation_rate))
 
+            # is the population size constant?
+
             # 1. Selection
-            parents = self._strongest_parents(population)
+            choosen_parents = self._strongest_parents(population)
 
-            self._save_model(parents)  # Saving main model based on the current best two chromosomes
 
-            # 2. Crossover (Roulette selection)
-            pairs = []
-            #while len(pairs) != self.population_size:
-            #    pairs.append(self._pair(parents))
-
-            # todo higher rank should get higher prob
-            # # 2. Crossover (Rank selection)
-            pairs = self._combinations(parents)
+            # 2. Crossover (Rank selection)
+            pairs = self._combinations(choosen_parents)
             random.shuffle(pairs)
             pairs = pairs[:self.population_size]
 
@@ -70,6 +82,8 @@ class DNNGeneticEvolutionTrainer:
             new_population = self._mutation(base_offsprings)
             population = new_population
             self.generation += 1
+
+            #self._save_population()
 
     def _combinations(self, parents):
         combinations = []
@@ -107,18 +121,11 @@ class DNNGeneticEvolutionTrainer:
         for i in range(len(population)):
             chromosome = population[i]
             scores_for_chromosomes.append((chromosome, self._gameplay_for_chromosome(chromosome)))
-            #if i == len(population)-1:
-            #    print "\r"+"\033[K"+"\r",
-            #else:
-            #    print "\r" + str(i + 1) + " out of " + str(len(population)),
 
         scores_for_chromosomes.sort(key=lambda x: x[1])
-        #print "population: " + str(mean([x[1] for x in scores_for_chromosomes]))
 
         top_performers = scores_for_chromosomes[-self.parents:]
         top_scores = [x[1] for x in top_performers]
-        #print "top " + str(self.selection_rate) + ": " + "(min: " + str(min(top_scores)) + ", avg: " + str(mean(top_scores)) + ", max: " + str(max(top_scores)) + ")"
-        #print ""
         return top_performers
 
     def _gameplay_for_chromosome(self, chromosome):

@@ -13,9 +13,8 @@ class DeepNeuralNetModel:
     hidden = None
     hidden_node_neurons = Constants.MODEL_FEATURE_COUNT ** 3
 
-    def __init__(self, path):
-        self.dnn_model_path = path
-        self.dnn_model_file_name = self.dnn_model_path + "model.tf"
+    def __init__(self):
+
         network = input_data(shape=[None, Constants.MODEL_FEATURE_COUNT, 1])
         self.hidden = network = fully_connected(network, self.hidden_node_neurons, activation='relu6')
         network = fully_connected(network, 1, activation='linear')
@@ -24,8 +23,11 @@ class DeepNeuralNetModel:
         # if os.path.isfile(self.dnn_model_file_name+".index"):
         #     self.model.load(self.dnn_model_file_name)
 
-    def save(self):
-        self.model.save(self.dnn_model_file_name)
+    def save(self, path):
+        self.model.save(path)
+
+    def load(self, path):
+        self.model.load(path)
 
     def get_weights(self):
         return self.model.get_weights(self.hidden.W)
