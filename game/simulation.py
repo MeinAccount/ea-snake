@@ -5,7 +5,7 @@ from game.direction import Board
 from render import SimpleHandler
 
 
-def dnn_to_handler(model) -> Callable[[Snake, Apple], int]:
+def compute_with_dnn(model) -> float:
     def dnn_handler(snake: Snake, apple: Apple) -> int:
         angle = Board.compute_normalized_angle(snake.current_direction, snake.pos[0], apple.pos)
         neighbours_free = Board.neighbours_free(snake.current_direction, snake.pos)
@@ -13,10 +13,10 @@ def dnn_to_handler(model) -> Callable[[Snake, Apple], int]:
         # TODO: compute score based on angle and neighbours_free
         pass
 
-    return dnn_handler
+    return compute_score(dnn_handler)
 
 
-def compute_score(step_handler: Callable[[Snake, Apple], int]) -> int:
+def compute_score(step_handler: Callable[[Snake, Apple], int]) -> float:
     snake = Snake((20, 20))
     apple = Apple()
 
