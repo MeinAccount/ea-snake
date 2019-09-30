@@ -34,3 +34,11 @@ class DeepNeuralNetModel:
 
     def set_weights(self, weights):
         self.model.set_weights(self.hidden.W, weights)
+
+    def predict(self, angle, neighbours_free):
+        """
+        :param angle: angle to apple in [-1, 1)
+        :param neighbours_free: list of three bools denoting [left free, forward free, right free]
+        :return: direction with (left: -1, forward: 0, right: 1)
+        """
+        pass

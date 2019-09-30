@@ -2,15 +2,22 @@ from typing import Callable
 
 from game.direction import Board
 from game.state import GameState
+from model import DeepNeuralNetModel
 from render import SimpleHandler
 
+model = DeepNeuralNetModel()
 
-def compute_with_dnn(model) -> float:
+
+def compute_with_dnn(cromo) -> float:
+    model.set_weights(cromo)
+
     def dnn_handler(state: GameState) -> int:
         angle = Board.compute_normalized_angle(state.direction, state.positions[0], state.apple_pos)
         neighbours_free = Board.neighbours_free(state.direction, state.positions)
 
         # TODO: compute score based on angle and neighbours_free
+        model.predict(angle, neighbours_free)
+
         pass
 
     return compute_score(dnn_handler)
