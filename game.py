@@ -1,8 +1,7 @@
-import time
 from typing import Callable
 
 import pygame
-from pygame.constants import K_ESCAPE
+from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT
 
 from data import Snake, Apple, GRID_HEIGHT, GRID_WIDTH
 
@@ -53,16 +52,13 @@ class App:
         self.on_init()
         running = True
         while running:
-            pygame.event.pump()
-            keys = pygame.key.get_pressed()
-
-            if keys[K_ESCAPE]:
+            self.on_render()
+            event = pygame.event.wait()
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 running = False
-            else:
+            elif event.type == KEYDOWN and event.key == K_SPACE:
                 running = self.on_loop()
 
-            self.on_render()
-            time.sleep(50.0 / 1000.0)
         pygame.quit()
 
 

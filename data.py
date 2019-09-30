@@ -16,6 +16,7 @@ class Apple:
 
     def __init__(self) -> None:
         self.replace()
+        self.pos = (21, 20)
 
     def replace(self):
         self.pos = (random.randint(0, GRID_WIDTH), random.randint(0, GRID_HEIGHT))
@@ -53,6 +54,7 @@ class Snake:
     def move(self, apple: Apple) -> bool:
         new_pos = direction_apply(self.current_direction, self.pos[0])
         if apple.pos == new_pos:
+            self.length += 1
             apple.replace()
         else:
             self.pos.pop()
