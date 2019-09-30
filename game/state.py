@@ -39,4 +39,4 @@ class GameState:
         return True
 
     def apple_replace(self):
-        self.apple_pos = (random.randint(0, GRID_WIDTH), random.randint(0, GRID_HEIGHT))
+        self.apple_pos = (random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT))

@@ -57,8 +57,8 @@ class DNNGeneticEvolutionTrainer:
     def _get_n_generations(self, parents, n):
         combinations = []
         for i in range(n):
-            r1 = random.randint(0, len(parents) - 1)
-            r2 = random.randint(0, len(parents) - 1)
+            r1 = random.randrange(0, len(parents))
+            r2 = random.randrange(0, len(parents))
             combinations.append((parents[r1], parents[r2]))
 
         return combinations
