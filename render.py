@@ -3,8 +3,8 @@ from typing import Callable
 import pygame
 from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT
 
-from game.data import Snake, Apple
 from game.direction import GRID_WIDTH, GRID_HEIGHT
+from game.state import GameState
 
 
 class App:
@@ -12,12 +12,11 @@ class App:
     windowHeight = GRID_HEIGHT * 10
 
     # step handler takes the snake and the apple and returns a new direction
-    def __init__(self, step_handler: Callable[[Snake, Apple], int]) -> None:
+    def __init__(self, step_handler: Callable[[GameState], int]) -> None:
         self.step_handler = step_handler
 
-        self.snake = Snake((20, 20))
-        self.apple = Apple()
-        self.apple.pos = (22, 20)
+        self.state = GameState((20, 20))
+        self.state.apple_pos = (22, 20)
 
     def on_init(self):
         pygame.init()
@@ -33,10 +32,10 @@ class App:
         self._apple_surf.fill((0, 255, 0))
 
     def on_loop(self) -> bool:
-        self.snake.current_direction = self.step_handler(self.snake, self.apple)
+        self.state.direction = self.step_handler(self.state)
 
         # move
-        if not self.snake.move(self.apple):
+        if not self.state.move():
             print("self or border intersection")
             return False
 
@@ -44,8 +43,13 @@ class App:
 
     def on_render(self):
         self._display_surf.fill((0, 0, 0))
-        self.snake.draw(self._display_surf, self._image_surf)
-        self.apple.draw(self._display_surf, self._apple_surf)
+
+        # draw apple
+        self._display_surf.blit(self._apple_surf, (self.state.apple_pos[0] * 10, self.state.apple_pos[1] * 10))
+
+        # draw tiles
+        for (x, y) in self.state.positions:
+            self._display_surf.blit(self._image_surf, (x * 10, y * 10))
         pygame.display.flip()
 
     def on_execute(self):
@@ -66,7 +70,7 @@ class SimpleHandler:
     directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
     index = 0
 
-    def handle(self, snake, apple):
+    def handle(self, state):
         self.index = (self.index + 1) % len(self.directions)
         return self.directions[self.index]
 
