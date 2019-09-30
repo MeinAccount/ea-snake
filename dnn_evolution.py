@@ -38,9 +38,12 @@ class DNNGeneticEvolutionTrainer:
             # 1. Selection
             chosen_parents = self._strongest_parents(population)
 
+
+            # get n possible combinations
+
             # 2. Crossover (Rank selection)
-            pairs = self._combinations(chosen_parents)
-            random.shuffle(pairs)
+            pairs = self._get_n_generations(chosen_parents, population_size-self.parents)
+            #random.shuffle(pairs)
 
             base_offsprings = []
             for pair in pairs[:self.population_size]:
@@ -50,9 +53,19 @@ class DNNGeneticEvolutionTrainer:
             # 3. Mutation
             new_population = self._mutation(base_offsprings)
             population = new_population
+            population.extend(chosen_parents)
             self.generation += 1
 
             # self._save_population()
+
+    def _get_n_generations(self, parents, n):
+        combinations = []
+        for i in range(n):
+            r1 = random.randint(0, len(parents))
+            r2 = random.randint(0, len(parents))
+            combinations.append((parents[r1], parents[r2]))
+
+        return combinations
 
     def _combinations(self, parents):
         combinations = []
