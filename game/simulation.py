@@ -1,6 +1,6 @@
 from typing import Callable
 
-from data import Snake, Apple
+from game.data import Snake, Apple
 from render import SimpleHandler
 
 
