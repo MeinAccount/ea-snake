@@ -1,3 +1,4 @@
 tflearn
 pygame
+numpy
 
