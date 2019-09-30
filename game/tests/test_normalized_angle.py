@@ -91,7 +91,3 @@ class TestNormalizedAngle(unittest.TestCase):
 
         # up-right
         self.assertEqual(compute_normalized_angle(Directions.DOWN, (0, 0), (1, -1)), 0.75)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,6 +1,6 @@
 import random
 
-from game.direction import direction_apply
+from game.direction import Directions
 
 GRID_WIDTH = 50
 GRID_HEIGHT = 50
@@ -28,14 +28,14 @@ class Snake:
         self.length = length
         self.pos.append(start_pos)
         for i in range(1, length):
-            self.pos.append(direction_apply(2, self.pos[i - 1]))
+            self.pos.append(Directions.apply(2, self.pos[i - 1]))
 
     def draw(self, surface, image):
         for (x, y) in self.pos:
             surface.blit(image, (x * 10, y * 10))
 
     def move(self, apple: Apple) -> bool:
-        new_pos = direction_apply(self.current_direction, self.pos[0])
+        new_pos = Directions.apply(self.current_direction, self.pos[0])
 
         # check for edge
         if new_pos[0] == -1 or new_pos[0] == GRID_WIDTH or new_pos[1] == -1 or new_pos == GRID_HEIGHT:

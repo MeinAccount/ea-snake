@@ -1,16 +1,16 @@
-import math
 from typing import Callable
 
 from game.data import Snake, Apple
+from game.direction import compute_normalized_angle, Directions
 from render import SimpleHandler
 
 
 def dnn_to_handler(model) -> Callable[[Snake, Apple], int]:
     def dnn_handler(snake: Snake, apple: Apple) -> int:
-        # compute angle to fruit
-        snake_x, snake_y = snake.pos[0]
-        angle = math.atan2(apple.pos[0] - snake_x, apple.pos[1] - snake_y)
+        angle = compute_normalized_angle(snake.current_direction, snake.pos[0], apple.pos)
+        occupied = Directions.neighbours_occupied(snake.current_direction, snake.pos)
 
+        # TODO: compute score based on angle and occupied
         pass
 
     return dnn_handler
