@@ -1,21 +1,33 @@
+import random
 import time
+from typing import Callable
 
 import pygame
+from pygame.constants import K_ESCAPE
+
 # directions:
 # - right 0
 # - top 1
 # - left 2
 # - down 3
-from pygame.constants import K_ESCAPE
+
+
+GRID_WIDTH = 50
+GRID_HEIGHT = 50
 
 
 class Apple:
-    x = 0
-    y = 0
+    pos = (0, 0)
     direction = 0
 
+    def __init__(self) -> None:
+        self.replace()
+
+    def replace(self):
+        self.pos = (random.randint(0, GRID_WIDTH), random.randint(0, GRID_HEIGHT))
+
     def draw(self, surface, image):
-        surface.blit(image, (self.x, self.y))
+        surface.blit(image, (self.pos[0] * 10, self.pos[1] * 10))
 
 
 def direction_apply(direction, pos):
@@ -44,19 +56,27 @@ class Snake:
         for (x, y) in self.pos:
             surface.blit(image, (x * 10, y * 10))
 
-    def move(self):
-        self.pos.insert(0, direction_apply(self.current_direction, self.pos[0]))
-        self.pos.pop()
-        print(self.pos)
+    def move(self, apple: Apple) -> bool:
+        new_pos = direction_apply(self.current_direction, self.pos[0])
+        if apple.pos == new_pos:
+            apple.replace()
+        else:
+            self.pos.pop()
+
+        if new_pos in self.pos:
+            return False  # self intersection!
+
+        self.pos.insert(0, new_pos)
+        return True
 
 
 class App:
-    grindWidth = 50
-    gridHeight = 50
+    windowWidth = GRID_WIDTH * 10
+    windowHeight = GRID_HEIGHT * 10
 
-    def __init__(self) -> None:
-        self.windowWidth = self.grindWidth * 10
-        self.windowHeight = self.gridHeight * 10
+    # step handler takes the snake and the apple and returns a new direction
+    def __init__(self, step_handler: Callable[[Snake, Apple], int]) -> None:
+        self.step_handler = step_handler
 
         self.apple = Apple()
         self.snake = Snake((20, 20))
@@ -74,6 +94,18 @@ class App:
         self._apple_surf = pygame.Surface((10, 10))
         self._apple_surf.fill((0, 255, 0))
 
+    def on_loop(self) -> bool:
+        self.snake.current_direction = self.step_handler(self.snake, self.apple)
+
+        # move
+        if not self.snake.move(self.apple):
+            print("self intersection!!!")
+            return False
+
+        # TODO: check for edges
+
+        return True
+
     def on_render(self):
         self._display_surf.fill((0, 0, 0))
         self.snake.draw(self._display_surf, self._image_surf)
@@ -90,13 +122,21 @@ class App:
             if keys[K_ESCAPE]:
                 running = False
 
-            self.snake.move()
+            running = self.on_loop()
             self.on_render()
-
             time.sleep(50.0 / 1000.0)
-        # pygame.quit()
+        pygame.quit()
+
+
+class SimpleHandler:
+    directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+    index = 0
+
+    def handle(self, snake, apple):
+        self.index = (self.index + 1) % len(self.directions)
+        return self.directions[self.index]
 
 
 if __name__ == "__main__":
-    theApp = App()
+    theApp = App(SimpleHandler().handle)
     theApp.on_execute()
