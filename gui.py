@@ -1,0 +1,31 @@
+from tkinter import *
+import os
+import dnn_evolution
+import pygame
+from preconditions import preconditions
+
+generation_apps = []
+
+def CurSelect(evt):
+    value = str(listNodes.get(listNodes.curselection()))
+    generation_apps[int(value.replace("Generation ",""))].on_execute()
+
+def insert(app):
+    listNodes.insert("Generation " + str(listNodes.size()+1))
+    generation_apps.append(app)
+
+window = Tk() # create window
+window.configure(bg='lightgrey')
+window.title("Snake Evolution Simulator")
+window.geometry("200x400")
+
+lbl1 = Label(window, text="Generation List:", fg='black', font=("Helvetica", 16, "bold"))
+scrollbar = Scrollbar(window, orient="vertical")
+scrollbar.pack(side=RIGHT, fill=Y)
+
+listNodes = Listbox(window,  yscrollcommand=scrollbar.set, font=("Helvetica", 12), selectmode = SINGLE)
+listNodes.pack(expand=True, fill=Y)
+listNodes.bind('<<ListboxSelect>>', CurSelect)
+scrollbar.config(command=listNodes.yview)
+window.mainloop()
+
