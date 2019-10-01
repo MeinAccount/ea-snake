@@ -1,6 +1,6 @@
 import copy
 
-import numpy as np
+import cupy as np
 
 from constants import Constants
 from game.simulation import dnn_to_handler, compute_score
