@@ -22,19 +22,23 @@ def dnn_to_handler(chromo) -> Callable[[GameState], int]:
 def compute_score(step_handler: Callable[[GameState], int]) -> float:
     state = GameState((20, 20))
     step_count = 0
+    total_count = 0
     global top_score_factor
     while step_count <= top_score_factor * 120:
         state.direction = step_handler(state)
         step_count += 1
         if not state.move():
-            return update_top_score_factor(state.length)
+            return update_top_score_factor(state.length, total_count)
+        total_count += 1
 
-    return update_top_score_factor(state.length)
+    return update_top_score_factor(state.length, total_count)
 
 
-def update_top_score_factor(score):
+def update_top_score_factor(score, total_count):
+    print(total_count, score)
     global top_score_factor
     if score > top_score_factor:
         top_score_factor = score
         print("Best: {}".format(top_score_factor))
-    return score
+    import math
+    return score / math.log(total_count**2)
