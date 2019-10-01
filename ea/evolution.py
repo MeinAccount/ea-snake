@@ -1,6 +1,5 @@
 import copy
 import multiprocessing
-
 import numpy as np
 
 from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
@@ -16,14 +15,13 @@ class Evolution:
     parents = int(population_size * selection_rate)
 
     load_gen = None
-    save_mode = True
+    save_mode = False
 
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
 
     def genetic_evolution(self, best_receiver=lambda x: None):
         population = self._initial_population()
-        DNNStore.save(self.generation, population)
 
         while True:
             population_size = len(population) if population is not None else self.population_size
