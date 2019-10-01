@@ -1,12 +1,12 @@
 import copy
+import multiprocessing
 import pickle
 from pathlib import Path
 
 import numpy as np
 
-from constants import Constants
+from ea.dnn import MODEL_PATH, MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
 from game.simulation import dnn_to_handler, compute_score
-from model import DeepNeuralNetModel
 
 
 class DNNGeneticEvolutionTrainer:
@@ -16,21 +16,22 @@ class DNNGeneticEvolutionTrainer:
     population_size = 100
     parents = int(population_size * selection_rate)
 
-    model = DeepNeuralNetModel()
-
     load_gen = None
     save_mode = True
 
+    def __init__(self) -> None:
+        self.pool = multiprocessing.Pool()
+
     def _save_population(self, population):
-        folder = Path(Constants.MODEL_PATH.format("")[:-10])
+        folder = Path(MODEL_PATH.format("")[:-10])
         if not folder.exists():
             folder.mkdir(parents=True)
 
-        with open(Constants.MODEL_PATH.format(self.generation), 'wb') as filehandler:
+        with open(MODEL_PATH.format(self.generation), 'wb') as filehandler:
             pickle.dump(population, filehandler)
 
     def _load_population(self, generation):
-        path = Constants.MODEL_PATH.format(generation)
+        path = MODEL_PATH.format(generation)
         p = Path(path)
         if not p.exists():
             return None
@@ -93,13 +94,14 @@ class DNNGeneticEvolutionTrainer:
         mask = np.random.choice([True, False], array.shape, p=[self.mutation_rate, 1 - self.mutation_rate])
         array[mask] = np.random.uniform(-1, 1, array.shape)[mask]  # TODO: perhaps generate less random data
 
-    def _strongest_parents(self, population):
-        scores_for_chromosomes = []
-        for chromo in population:
-            score = compute_score(dnn_to_handler(chromo))
-            scores_for_chromosomes.append((chromo, score))
-            print(score)
+    @staticmethod
+    def _score_chromo(chromo):
+        score = compute_score(dnn_to_handler(chromo))
+        print(score)
+        return chromo, score
 
+    def _strongest_parents(self, population):
+        scores_for_chromosomes = list(self.pool.map(self._score_chromo, population))
         scores_for_chromosomes.sort(key=lambda x: x[1])
 
         top_performers = scores_for_chromosomes[-self.parents:]
@@ -117,9 +119,8 @@ class DNNGeneticEvolutionTrainer:
 
         population = []
         for i in range(0, self.population_size):
-            population.append((self._random_chromosome(Constants.MODEL_FEATURE_COUNT,
-                                                       DeepNeuralNetModel.hidden_node_neurons),
-                               self._random_chromosome(DeepNeuralNetModel.hidden_node_neurons, 3)))
+            population.append((self._random_chromosome(MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS),
+                               self._random_chromosome(MODEL_HIDDEN_NEURONS, 3)))
 
         return population
 

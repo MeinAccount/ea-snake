@@ -1,5 +1,3 @@
-tflearn
-tensorflow
 pygame
 numpy
 pickle-mixin
