@@ -18,7 +18,7 @@ class DNNGeneticEvolutionTrainer:
 
     model = DeepNeuralNetModel()
 
-    load_gen = 1
+    load_gen = None
     save_mode = True
 
     def _save_population(self, population):
