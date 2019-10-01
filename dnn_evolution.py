@@ -1,8 +1,8 @@
 import copy
-import random
 import pickle
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 
 from constants import Constants
 from game.simulation import dnn_to_handler, compute_score
@@ -28,8 +28,6 @@ class DNNGeneticEvolutionTrainer:
 
         with open(Constants.MODEL_PATH.format(self.generation), 'wb') as filehandler:
             pickle.dump(population, filehandler)
-
-
 
     def _load_population(self, generation):
         path = Constants.MODEL_PATH.format(generation)
@@ -70,7 +68,6 @@ class DNNGeneticEvolutionTrainer:
 
             if self.save_mode:
                 self._save_population(population)
-
 
     @staticmethod
     def _crossover(x, y):

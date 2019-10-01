@@ -2,11 +2,12 @@ import multiprocessing
 import queue
 import threading
 
+import gui
 from dnn_evolution import DNNGeneticEvolutionTrainer
 from game.simulation import dnn_to_handler
 from game.state import GameState
 from render import App
-import gui
+
 
 class QueueHandler:
     current_handler = None
@@ -33,9 +34,13 @@ class QueueHandler:
 
 if __name__ == '__main__':
     handler = QueueHandler()
+
+
     def worker1():
         trainer = DNNGeneticEvolutionTrainer()
         trainer.genetic_evolution(handler.queue.put)
+
+
     thread = threading.Thread(target=worker1)
     thread.start()
     thread2 = threading.Thread(target=gui.test(handler))

@@ -1,4 +1,3 @@
-
 class Constants:
     MODEL_LAYER_COUNT = 20
     MODEL_FEATURE_COUNT = 4
