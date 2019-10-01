@@ -1,9 +1,10 @@
 import copy
 import multiprocessing
+
 import numpy as np
 
 from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
-from ea.store import DNNStore
+from ea.store import Store
 from game.simulation import dnn_to_handler, compute_score
 
 
@@ -11,7 +12,7 @@ class Evolution:
     generation = 0
     selection_rate = 0.1
     mutation_rate = 0.01
-    population_size = 1000
+    population_size = 100
     parents = int(population_size * selection_rate)
 
     load_gen = None
@@ -22,7 +23,6 @@ class Evolution:
 
     def genetic_evolution(self, best_receiver=lambda x: None):
         population = self._initial_population()
-
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(
@@ -47,12 +47,11 @@ class Evolution:
             self.generation += 1
 
             if self.save_mode:
-                DNNStore.save(self.generation, population)
+                Store.save(self.generation, population)
 
     @staticmethod
     def _crossover(x, y):
-        return (Evolution._crossover_array(x[0], y[0]),
-                Evolution._crossover_array(x[1], y[1]))
+        return Evolution._crossover_array(x[0], y[0]), Evolution._crossover_array(x[1], y[1])
 
     @staticmethod
     def _crossover_array(x, y):
@@ -82,14 +81,13 @@ class Evolution:
         scores_for_chromosomes.sort(key=lambda x: x[1])
 
         top_performers = scores_for_chromosomes[-self.parents:]
-        top_scores = [x[1] for x in top_performers]
-        print(top_scores)
+        print([x[1] for x in top_performers])
 
         return top_performers
 
     def _initial_population(self):
         if self.load_gen or self.load_gen == 0:
-            pop = DNNStore.load(self.load_gen)
+            pop = Store.load(self.load_gen)
             if pop:
                 self.generation = self.load_gen
                 return pop
@@ -104,8 +102,3 @@ class Evolution:
     @staticmethod
     def _random_chromosome(n, m):
         return np.random.uniform(-1, 1, (n, m))
-
-
-if __name__ == '__main__':
-    trainer = Evolution()
-    trainer.genetic_evolution()

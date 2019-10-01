@@ -3,13 +3,14 @@ from pathlib import Path
 
 from ea.dnn import MODEL_PATH
 
+_folder = Path(MODEL_PATH.format("")[:-10])
 
-class DNNStore:
+
+class Store:
     @staticmethod
     def save(generation, population):
-        folder = Path(MODEL_PATH.format("")[:-10])
-        if not folder.exists():
-            folder.mkdir(parents=True)
+        if not _folder.exists():
+            _folder.mkdir(parents=True)
 
         with open(MODEL_PATH.format(generation), 'wb') as handler:
             pickle.dump(population, handler)

@@ -2,9 +2,8 @@ from typing import Tuple, List
 
 import numpy as np
 
-MODEL_LAYER_COUNT = 20
 MODEL_FEATURE_COUNT = 4
-MODEL_HIDDEN_NEURONS = MODEL_FEATURE_COUNT * MODEL_LAYER_COUNT ** 2
+MODEL_HIDDEN_NEURONS = 100
 MODEL_PATH = "dnn_genetic_evolution/gen{}.pickle"
 
 
