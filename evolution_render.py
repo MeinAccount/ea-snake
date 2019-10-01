@@ -24,9 +24,8 @@ class QueueHandler:
     def update(self):
         try:
             cromo = self.queue.get_nowait()
-            self.current_handler = dnn_to_handler(cromo)
-            app = App(self.handler, self.update)
-            gui.insert(app)
+            if cromo is not None:
+                gui.insert(dnn_to_handler(cromo))
             print("renderer updated")
         except queue.Empty:
             pass
@@ -43,5 +42,6 @@ if __name__ == '__main__':
 
     thread = threading.Thread(target=worker1)
     thread.start()
-    thread2 = threading.Thread(target=gui.test(handler))
+    thread2 = threading.Thread(target=gui.test(handler.update))
     thread2.start()
+
