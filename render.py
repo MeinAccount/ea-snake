@@ -61,7 +61,7 @@ class App:
 
     def on_execute(self):
         self.on_init()
-        pygame.time.set_timer(self.EVENT_TICK, 50)
+        pygame.time.set_timer(EVENT_TICK, 50)
 
         running = True
         playing = False
@@ -78,7 +78,7 @@ class App:
                 running = False
             elif event.type == KEYDOWN and event.key == K_SPACE:
                 self.on_loop()
-            elif event.type == self.EVENT_TICK:
+            elif event.type == EVENT_TICK:
                 self.tick_handler()
                 if playing:
                     playing = self.on_loop()

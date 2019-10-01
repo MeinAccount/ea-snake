@@ -12,15 +12,15 @@ class Directions:
     DOWN = 3
 
     @staticmethod
-    def to_left(direction) -> int:
+    def to_left(direction: int) -> int:
         return (direction + 1) % 4
 
     @staticmethod
-    def to_right(direction) -> int:
+    def to_right(direction: int) -> int:
         return (direction - 1) % 4
 
     @staticmethod
-    def apply(direction, pos):
+    def apply(direction: int, pos: Tuple[int, int]):
         (x, y) = pos
         if direction == Directions.RIGHT:
             return x + 1, y
@@ -34,7 +34,7 @@ class Directions:
 
 class Board:
     @staticmethod
-    def neighbours_free(direction, positions) -> List[bool]:
+    def neighbours_free(direction: int, positions: List[Tuple[int, int]]) -> List[bool]:
         """
         :param direction: direction to check
         :param positions: list of positions - with list head assumed as head

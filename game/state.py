@@ -1,5 +1,6 @@
 import random
 from collections import deque
+from typing import Tuple
 
 from game.direction import Directions, GRID_WIDTH, GRID_HEIGHT
 
@@ -9,7 +10,7 @@ class GameState:
     positions = None
     direction = 0
 
-    def __init__(self, start_pos, length=3) -> None:
+    def __init__(self, start_pos: Tuple[int, int], length: int = 3) -> None:
         self.length = length
         self.positions = deque()
         self.positions.append(start_pos)
