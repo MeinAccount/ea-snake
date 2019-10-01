@@ -2,4 +2,6 @@ tflearn
 tensorflow
 pygame
 numpy
+pickle
+pathlib
 

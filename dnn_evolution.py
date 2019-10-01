@@ -1,14 +1,13 @@
 import copy
 import random
-
+import pickle
 import numpy as np
+from pathlib import Path
 
 from constants import Constants
 from game.simulation import dnn_to_handler, compute_score
 from model import DeepNeuralNetModel
 
-
-from typing import Dict, Tuple, Sequence
 
 
 class DNNGeneticEvolutionTrainer:
@@ -18,14 +17,35 @@ class DNNGeneticEvolutionTrainer:
     population_size = 100
     parents = int(population_size * selection_rate)
 
+    model = DeepNeuralNetModel()
+
+    load_gen = 1
+    save_mode = True
+
     def _save_population(self, population):
-        model = DeepNeuralNetModel()
-        for i in population:
-            model.set_weights(i)
-            model.save(Constants.MODEL_PATH.format(self.generation, hash(i)))
+        folder = Path(Constants.MODEL_PATH.format("")[:-10])
+        if not folder.exists():
+            folder.mkdir(parents=True)
+
+        with open(Constants.MODEL_PATH.format(self.generation), 'wb') as filehandler:
+            pickle.dump(population, filehandler)
+
+
+
+    def _load_population(self, generation):
+        path = Constants.MODEL_PATH.format(generation)
+        p = Path(path)
+        if not p.exists():
+            return None
+
+        with open(p, 'rb') as filehandler:
+            population = pickle.load(filehandler)
+
+        return population
 
     def genetic_evolution(self, best_receiver=lambda x: None):
         population = self._initial_population()
+        self._save_population(population)
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(
@@ -52,7 +72,8 @@ class DNNGeneticEvolutionTrainer:
             population = base_offsprings
             self.generation += 1
 
-            # self._save_population()
+            if self.save_mode:
+                self._save_population(population)
 
     def _get_n_generations(self, parents, n):
         combinations = []
@@ -128,6 +149,12 @@ class DNNGeneticEvolutionTrainer:
         return top_performers
 
     def _initial_population(self):
+        if self.load_gen or self.load_gen == 0:
+            pop = self._load_population(self.load_gen)
+            if pop:
+                self.generation = self.load_gen
+                return pop
+
         population = []
         for i in range(0, self.population_size):
             population.append((self._random_chromosome(Constants.MODEL_FEATURE_COUNT,
