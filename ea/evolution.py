@@ -23,7 +23,7 @@ class Evolution:
         self.pool = multiprocessing.Pool()
 
     def genetic_evolution(self, population: List[Tuple[np.ndarray, np.ndarray]],
-                          best_receiver: Callable[[Tuple[np.ndarray, np.ndarray]], None] = lambda x: None):
+                          best_receiver: Callable[[Tuple[np.ndarray, np.ndarray]], None] = lambda x: None) -> None:
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(

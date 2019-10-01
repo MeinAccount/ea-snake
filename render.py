@@ -4,15 +4,18 @@ import sys
 from typing import Callable
 
 import pygame
-from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT, USEREVENT, K_p, K_r
+from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT, USEREVENT, K_p, K_r, K_f
 
 from ea.store import Store
 from game.direction import GRID_WIDTH, GRID_HEIGHT
 from game.simulation import dnn_to_handler
 from game.state import GameState
 
+EVENT_TICK = USEREVENT + 1
+
 
 class App:
+    steps = 0
     windowWidth = GRID_WIDTH * 10
     windowHeight = GRID_HEIGHT * 10
 
@@ -27,11 +30,9 @@ class App:
 
     def on_init(self):
         pygame.init()
+        pygame.display.set_caption('EA Snake')
         self._display_surf = pygame.display.set_mode((self.windowWidth, self.windowHeight), pygame.HWSURFACE)
 
-        pygame.display.set_caption('EA Snake')
-        # self._image_surf = pygame.image.load("pygame.png").convert()
-        # self._apple_surf = pygame.image.load("apple.png").convert()
         self._image_surf = pygame.Surface((10, 10))
         self._image_surf.fill((255, 0, 0))
 
@@ -39,6 +40,10 @@ class App:
         self._apple_surf.fill((0, 255, 0))
 
     def on_loop(self) -> bool:
+        self.steps += 1
+        pygame.display.set_caption('EA Snake - length {} - {} steps'.format(self.state.length, self.steps))
+
+        # get new direction
         self.state.direction = self.step_handler(self.state)
 
         # move
@@ -59,22 +64,26 @@ class App:
             self._display_surf.blit(self._image_surf, (x * 10, y * 10))
         pygame.display.flip()
 
-    EVENT_TICK = USEREVENT + 1
-
     def on_execute(self):
         self.on_init()
-        pygame.time.set_timer(self.EVENT_TICK, 100)
+        pygame.time.set_timer(EVENT_TICK, 50)
 
         running = True
         playing = False
+        fastest = False
         while running:
             self.on_render()
-            event = pygame.event.wait()
+            if fastest:
+                event = pygame.event.poll()
+                fastest = self.on_loop()
+            else:
+                event = pygame.event.wait()
+
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 running = False
             elif event.type == KEYDOWN and event.key == K_SPACE:
                 self.on_loop()
-            elif event.type == self.EVENT_TICK:
+            elif event.type == EVENT_TICK:
                 self.tick_handler()
                 if playing:
                     playing = self.on_loop()
@@ -83,6 +92,9 @@ class App:
             elif event.type == KEYDOWN and event.key == K_r:
                 self.state = GameState((20, 20))
                 self.state.apple_pos = (22, 20)
+            elif event.type == KEYDOWN and event.key == K_f:
+                fastest = not fastest
+                playing = False
 
         pygame.quit()
 
