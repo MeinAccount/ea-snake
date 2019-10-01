@@ -47,14 +47,11 @@ class DNNGeneticEvolutionTrainer:
 
     @staticmethod
     def _crossover(x, y):
-        return (DNNGeneticEvolutionTrainer._crossover_array(x[0], y[0], Constants.MODEL_FEATURE_COUNT,
-                                                            DeepNeuralNetModel.hidden_node_neurons),
-                DNNGeneticEvolutionTrainer._crossover_array(x[1], y[1], DeepNeuralNetModel.hidden_node_neurons,
-                                                            3
-                                                            ))
+        return (DNNGeneticEvolutionTrainer._crossover_array(x[0], y[0]),
+                DNNGeneticEvolutionTrainer._crossover_array(x[1], y[1]))
 
     @staticmethod
-    def _crossover_array(x, y, n, m):
+    def _crossover_array(x, y):
         """crosses two numpy arrays"""
         mask = np.random.choice([True, False], x.shape)
         offspring = copy.deepcopy(x)
