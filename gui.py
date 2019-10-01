@@ -1,10 +1,4 @@
 from tkinter import *
-import os
-import dnn_evolution
-import pygame
-from preconditions import preconditions
-from evolution_render import QueueHandler
-from render import App
 
 generation_apps = []
 
