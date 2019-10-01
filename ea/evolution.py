@@ -1,19 +1,18 @@
 import copy
 import multiprocessing
-import pickle
-from pathlib import Path
 
 import numpy as np
 
-from ea.dnn import MODEL_PATH, MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
+from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
+from ea.store import DNNStore
 from game.simulation import dnn_to_handler, compute_score
 
 
-class DNNGeneticEvolutionTrainer:
+class Evolution:
     generation = 0
     selection_rate = 0.1
     mutation_rate = 0.01
-    population_size = 100
+    population_size = 1000
     parents = int(population_size * selection_rate)
 
     load_gen = None
@@ -22,28 +21,10 @@ class DNNGeneticEvolutionTrainer:
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
 
-    def _save_population(self, population):
-        folder = Path(MODEL_PATH.format("")[:-10])
-        if not folder.exists():
-            folder.mkdir(parents=True)
-
-        with open(MODEL_PATH.format(self.generation), 'wb') as filehandler:
-            pickle.dump(population, filehandler)
-
-    def _load_population(self, generation):
-        path = MODEL_PATH.format(generation)
-        p = Path(path)
-        if not p.exists():
-            return None
-
-        with open(p, 'rb') as filehandler:
-            population = pickle.load(filehandler)
-
-        return population
-
     def genetic_evolution(self, best_receiver=lambda x: None):
         population = self._initial_population()
-        self._save_population(population)
+        DNNStore.save(self.generation, population)
+
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(
@@ -68,12 +49,12 @@ class DNNGeneticEvolutionTrainer:
             self.generation += 1
 
             if self.save_mode:
-                self._save_population(population)
+                DNNStore.save(self.generation, population)
 
     @staticmethod
     def _crossover(x, y):
-        return (DNNGeneticEvolutionTrainer._crossover_array(x[0], y[0]),
-                DNNGeneticEvolutionTrainer._crossover_array(x[1], y[1]))
+        return (Evolution._crossover_array(x[0], y[0]),
+                Evolution._crossover_array(x[1], y[1]))
 
     @staticmethod
     def _crossover_array(x, y):
@@ -96,12 +77,10 @@ class DNNGeneticEvolutionTrainer:
 
     @staticmethod
     def _score_chromo(chromo):
-        score = compute_score(dnn_to_handler(chromo))
-        print(score)
-        return chromo, score
+        return chromo, compute_score(dnn_to_handler(chromo))
 
     def _strongest_parents(self, population):
-        scores_for_chromosomes = list(self.pool.map(self._score_chromo, population))
+        scores_for_chromosomes = self.pool.map(self._score_chromo, population)
         scores_for_chromosomes.sort(key=lambda x: x[1])
 
         top_performers = scores_for_chromosomes[-self.parents:]
@@ -112,7 +91,7 @@ class DNNGeneticEvolutionTrainer:
 
     def _initial_population(self):
         if self.load_gen or self.load_gen == 0:
-            pop = self._load_population(self.load_gen)
+            pop = DNNStore.load(self.load_gen)
             if pop:
                 self.generation = self.load_gen
                 return pop
@@ -130,5 +109,5 @@ class DNNGeneticEvolutionTrainer:
 
 
 if __name__ == '__main__':
-    trainer = DNNGeneticEvolutionTrainer()
+    trainer = Evolution()
     trainer.genetic_evolution()

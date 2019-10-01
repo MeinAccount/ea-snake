@@ -3,7 +3,7 @@ import queue
 import threading
 
 import gui
-from dnn_evolution import DNNGeneticEvolutionTrainer
+from ea.evolution import Evolution
 from game.simulation import dnn_to_handler
 from game.state import GameState
 from render import App
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
 
     def worker1():
-        trainer = DNNGeneticEvolutionTrainer()
+        trainer = Evolution()
         trainer.genetic_evolution(handler.queue.put)
 
 
