@@ -15,6 +15,7 @@ EVENT_TICK = USEREVENT + 1
 
 
 class App:
+    steps = 0
     windowWidth = GRID_WIDTH * 10
     windowHeight = GRID_HEIGHT * 10
 
@@ -39,6 +40,10 @@ class App:
         self._apple_surf.fill((0, 255, 0))
 
     def on_loop(self) -> bool:
+        self.steps += 1
+        pygame.display.set_caption('EA Snake - length {} - {} steps'.format(self.state.length, self.steps))
+
+        # get new direction
         self.state.direction = self.step_handler(self.state)
 
         # move
