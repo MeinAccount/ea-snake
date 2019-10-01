@@ -1,14 +1,12 @@
 import math
-from typing import Callable, Tuple
+from typing import Callable
 
-import numpy as np
-
-from ea.dnn import chromo_predict
+from ea.dnn import chromo_predict, Chromo
 from game.direction import Board
 from game.state import GameState
 
 
-def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState], int]:
+def dnn_to_handler(chromo: Chromo) -> Callable[[GameState], int]:
     def dnn_handler(state: GameState) -> int:
         angle = Board.compute_normalized_angle(state.direction, state.positions[0], state.apple_pos)
         param = Board.neighbours_free(state.direction, state.positions)

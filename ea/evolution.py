@@ -1,10 +1,10 @@
 import copy
 import multiprocessing
-from typing import List, Tuple, Callable
+from typing import List, Callable
 
 import numpy as np
 
-from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
+from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS, Chromo
 from ea.store import Store
 from game.simulation import dnn_to_handler, av_score
 
@@ -21,8 +21,8 @@ class Evolution:
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
 
-    def genetic_evolution(self, population: List[Tuple[np.ndarray, np.ndarray]],
-                          best_receiver: Callable[[Tuple[np.ndarray, np.ndarray]], None] = lambda x: None) -> None:
+    def genetic_evolution(self, population: List[Chromo],
+                          best_receiver: Callable[[Chromo], None] = lambda x: None) -> None:
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(
@@ -85,7 +85,7 @@ class Evolution:
 
         return top_performers
 
-    def random_population(self) -> List[Tuple[np.ndarray, np.ndarray]]:
+    def random_population(self) -> List[Chromo]:
         return list(map(self._random_chromosome, range(0, self.population_size)))
 
     @staticmethod
