@@ -6,7 +6,8 @@ import numpy as np
 
 from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
 from ea.store import Store
-from game.simulation import dnn_to_handler, compute_score
+from game.simulation import dnn_to_handler, compute_score, av_score
+
 
 
 class Evolution:
@@ -18,6 +19,9 @@ class Evolution:
 
     load_gen = None
     save_mode = False
+
+    top_score_factor = 10
+    old_tsf = 10
 
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
@@ -47,6 +51,8 @@ class Evolution:
             population.extend(map(lambda t: t[0], chosen_parents))
             self.generation += 1
 
+            Evolution.old_tsf = Evolution.top_score_factor
+
             if self.save_mode:
                 Store.save(self.generation, population)
 
@@ -75,7 +81,10 @@ class Evolution:
 
     @staticmethod
     def _score_chromo(chromo):
-        return chromo, compute_score(dnn_to_handler(chromo))
+        s, f = av_score(dnn_to_handler(chromo), 3, Evolution.old_tsf)
+        if f > Evolution.top_score_factor:
+            Evolution.top_score_factor = f
+        return chromo, s
 
     def _strongest_parents(self, population):
         scores_for_chromosomes = self.pool.map(self._score_chromo, population)

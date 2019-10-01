@@ -6,8 +6,8 @@ from ea.dnn import chromo_predict
 from game.direction import Board
 from game.state import GameState
 
-global top_score_factor
-top_score_factor = 30
+
+
 
 
 def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState], int]:
@@ -21,26 +21,26 @@ def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState
     return dnn_handler
 
 
-def compute_score(step_handler: Callable[[GameState], int]) -> float:
+def av_score(step_handler: Callable[[GameState], int], amount: int, top_score_factor) -> Tuple[float, int]:
+    score = []
+    for i in range(amount):
+        score.append(compute_score(step_handler, top_score_factor))
+    return update_top_score_factor(sum(score)/len(score), top_score_factor)
+
+
+def compute_score(step_handler: Callable[[GameState], int], top_score_factor) -> float:
     state = GameState((20, 20))
     step_count = 0
-    total_count = 0
-    global top_score_factor
     while step_count <= top_score_factor * 120:
         state.direction = step_handler(state)
         step_count += 1
         if not state.move():
-            return update_top_score_factor(state.length, total_count)
-        total_count += 1
-
-    return update_top_score_factor(state.length, total_count)
+            return state.length
+    return state.length
 
 
-def update_top_score_factor(score, total_count):
-    print(total_count, score)
-    global top_score_factor
+def update_top_score_factor(score, top_score_factor):
     if score > top_score_factor:
         top_score_factor = score
         print("Best: {}".format(top_score_factor))
-    import math
-    return score / math.log(total_count**2)
+    return score, top_score_factor
