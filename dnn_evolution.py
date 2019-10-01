@@ -11,7 +11,7 @@ class DNNGeneticEvolutionTrainer:
     generation = 0
     selection_rate = 0.1
     mutation_rate = 0.01
-    population_size = 100
+    population_size = 10
     parents = int(population_size * selection_rate)
 
     def _save_population(self, population):

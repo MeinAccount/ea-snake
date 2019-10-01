@@ -1,3 +1,4 @@
+cupy
 tflearn
 tensorflow
 pygame
