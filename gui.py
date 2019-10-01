@@ -13,7 +13,7 @@ def CurSelect(evt):
     generation_apps[int(value.replace("Generation ",""))-1].on_execute()
 
 def insert(app):
-    listNodes.insert(END,"Generation " + str(listNodes.size()+1))
+    listNodes.insert(END,"Generation " + str(listNodes.size()))
     generation_apps.append(app)
 
 window = Tk() # create window

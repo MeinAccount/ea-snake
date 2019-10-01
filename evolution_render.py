@@ -33,13 +33,10 @@ class QueueHandler:
 
 if __name__ == '__main__':
     handler = QueueHandler()
-
-
-    def worker():
+    def worker1():
         trainer = DNNGeneticEvolutionTrainer()
         trainer.genetic_evolution(handler.queue.put)
-
-
-    thread = threading.Thread(target=worker)
+    thread = threading.Thread(target=worker1)
     thread.start()
-    gui.test(handler)
+    thread2 = threading.Thread(target=gui.test(handler))
+    thread2.start()
