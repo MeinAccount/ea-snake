@@ -37,3 +37,5 @@ class GameState:
 
     def apple_replace(self):
         self.apple_pos = (random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT))
+        while self.apple_pos in self.positions:
+            self.apple_pos = (random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT))
