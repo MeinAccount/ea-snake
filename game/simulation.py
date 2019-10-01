@@ -7,9 +7,6 @@ from game.direction import Board
 from game.state import GameState
 
 
-
-
-
 def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState], int]:
     def dnn_handler(state: GameState) -> int:
         angle = Board.compute_normalized_angle(state.direction, state.positions[0], state.apple_pos)
@@ -21,26 +18,31 @@ def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState
     return dnn_handler
 
 
-def av_score(step_handler: Callable[[GameState], int], amount: int, top_score_factor) -> Tuple[float, int]:
+def av_score(step_handler: Callable[[GameState], int], amount: int) -> float:
     score = []
     for i in range(amount):
-        score.append(compute_score(step_handler, top_score_factor))
-    return update_top_score_factor(sum(score)/len(score), top_score_factor)
+        score.append(compute_score(step_handler))
+    return sum(score) / len(score)
 
 
-def compute_score(step_handler: Callable[[GameState], int], top_score_factor) -> float:
+def compute_score(step_handler: Callable[[GameState], int]) -> float:
     state = GameState((20, 20))
+
     step_count = 0
-    while step_count <= top_score_factor * 120:
+    reward = 0
+    distance_to_apple = state.distance_to_apple()
+
+    while step_count <= distance_to_apple * 3:
         state.direction = step_handler(state)
         step_count += 1
-        if not state.move():
-            return state.length
-    return state.length
 
+        self_intersecting, has_grown = state.move()
+        if not self_intersecting:
+            return reward
+        elif has_grown:
+            reward += distance_to_apple / step_count
 
-def update_top_score_factor(score, top_score_factor):
-    if score > top_score_factor:
-        top_score_factor = score
-        print("Best: {}".format(top_score_factor))
-    return score, top_score_factor
+            step_count = 0
+            distance_to_apple = state.distance_to_apple()
+
+    return reward

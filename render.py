@@ -47,7 +47,8 @@ class App:
         self.state.direction = self.step_handler(self.state)
 
         # move
-        if not self.state.move():
+        self_intersection, _ = self.state.move()
+        if not self_intersection:
             print("self or border intersection")
             return False
 
