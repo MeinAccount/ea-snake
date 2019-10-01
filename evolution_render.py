@@ -6,7 +6,7 @@ from dnn_evolution import DNNGeneticEvolutionTrainer
 from game.simulation import dnn_to_handler
 from game.state import GameState
 from render import App
-
+import gui
 
 class QueueHandler:
     current_handler = None
@@ -24,6 +24,8 @@ class QueueHandler:
         try:
             cromo = self.queue.get_nowait()
             self.current_handler = dnn_to_handler(cromo)
+            app = App(self.handler, self.update)
+            gui.insert(app)
             print("renderer updated")
         except queue.Empty:
             pass
@@ -40,6 +42,4 @@ if __name__ == '__main__':
 
     thread = threading.Thread(target=worker)
     thread.start()
-
-    app = App(handler.handler, handler.update)
-    app.on_execute()
+    gui.test(handler)
