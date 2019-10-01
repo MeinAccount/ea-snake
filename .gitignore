@@ -103,3 +103,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# dnn outputs
+dnn_genetic_evolution
