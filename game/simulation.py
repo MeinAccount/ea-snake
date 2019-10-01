@@ -7,6 +7,7 @@ from game.state import GameState
 global top_score_factor
 top_score_factor = 30
 
+
 def dnn_to_handler(chromo) -> Callable[[GameState], int]:
     def dnn_handler(state: GameState) -> int:
         angle = Board.compute_normalized_angle(state.direction, state.positions[0], state.apple_pos)
@@ -20,17 +21,13 @@ def dnn_to_handler(chromo) -> Callable[[GameState], int]:
 
 def compute_score(step_handler: Callable[[GameState], int]) -> float:
     state = GameState((20, 20))
-    # reward = 0
     step_count = 0
     global top_score_factor
-    while step_count <= top_score_factor*120:
+    while step_count <= top_score_factor * 120:
         state.direction = step_handler(state)
+        step_count += 1
         if not state.move():
             return update_top_score_factor(state.length)
-
-        # reward += state.length
-        step_count += 1
-
 
     return update_top_score_factor(state.length)
 
@@ -41,4 +38,3 @@ def update_top_score_factor(score):
         top_score_factor = score
         print("Best: {}".format(top_score_factor))
     return score
-

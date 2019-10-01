@@ -1,9 +1,14 @@
+#!/usr/bin/env python3
+
+import sys
 from typing import Callable
 
 import pygame
 from pygame.constants import K_ESCAPE, K_SPACE, KEYDOWN, QUIT, USEREVENT, K_p, K_r
 
+from ea.store import Store
 from game.direction import GRID_WIDTH, GRID_HEIGHT
+from game.simulation import dnn_to_handler
 from game.state import GameState
 
 
@@ -82,15 +87,7 @@ class App:
         pygame.quit()
 
 
-class SimpleHandler:
-    directions = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
-    index = 0
-
-    def handle(self, state):
-        self.index = (self.index + 1) % len(self.directions)
-        return self.directions[self.index]
-
-
 if __name__ == "__main__":
-    theApp = App(SimpleHandler().handle)
-    theApp.on_execute()
+    chromo = Store.loadFile(sys.argv[1])[-1]
+    app = App(dnn_to_handler(chromo))
+    app.on_execute()

@@ -16,13 +16,20 @@ class Store:
             pickle.dump(population, handler)
 
     @staticmethod
-    def load(generation):
+    def loadGen(generation):
         path = MODEL_PATH.format(generation)
-        p = Path(path)
-        if not p.exists():
+        path = Path(path)
+        if not path.exists():
             return None
 
-        with open(p, 'rb') as handler:
+        with open(path, 'rb') as handler:
             population = pickle.load(handler)
 
         return population
+
+    @staticmethod
+    def loadFile(path):
+        with open(path, 'rb') as handler:
+            chromo = pickle.load(handler)
+
+        return chromo

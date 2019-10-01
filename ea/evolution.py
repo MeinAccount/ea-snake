@@ -1,5 +1,6 @@
 import copy
 import multiprocessing
+from typing import List, Tuple, Callable
 
 import numpy as np
 
@@ -21,8 +22,8 @@ class Evolution:
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
 
-    def genetic_evolution(self, best_receiver=lambda x: None):
-        population = self._initial_population()
+    def genetic_evolution(self, population: List[Tuple[np.ndarray, np.ndarray]],
+                          best_receiver: Callable[[Tuple[np.ndarray, np.ndarray]], None] = lambda x: None):
         while True:
             population_size = len(population) if population is not None else self.population_size
             print("generation: " + str(self.generation) + ", population: " + str(
@@ -85,20 +86,10 @@ class Evolution:
 
         return top_performers
 
-    def _initial_population(self):
-        if self.load_gen or self.load_gen == 0:
-            pop = Store.load(self.load_gen)
-            if pop:
-                self.generation = self.load_gen
-                return pop
-
-        population = []
-        for i in range(0, self.population_size):
-            population.append((self._random_chromosome(MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS),
-                               self._random_chromosome(MODEL_HIDDEN_NEURONS, 3)))
-
-        return population
+    def random_population(self) -> List[Tuple[np.ndarray, np.ndarray]]:
+        return list(map(self._random_chromosome, range(0, self.population_size)))
 
     @staticmethod
-    def _random_chromosome(n, m):
-        return np.random.uniform(-1, 1, (n, m))
+    def _random_chromosome(_):
+        return (np.random.uniform(-1, 1, (MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS)),
+                np.random.uniform(-1, 1, (MODEL_HIDDEN_NEURONS, 3)))

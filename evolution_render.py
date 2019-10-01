@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     def worker1():
         trainer = Evolution()
-        trainer.genetic_evolution(handler.queue.put)
+        trainer.genetic_evolution(trainer.random_population(), handler.queue.put)
 
 
     thread = threading.Thread(target=worker1)
