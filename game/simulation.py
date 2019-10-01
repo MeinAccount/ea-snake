@@ -1,3 +1,4 @@
+import math
 from typing import Callable, Tuple
 
 import numpy as np
@@ -32,7 +33,7 @@ def compute_score(step_handler: Callable[[GameState], int]) -> float:
     reward = 0
     distance_to_apple = state.distance_to_apple()
 
-    while step_count <= distance_to_apple * 3:
+    while step_count <= distance_to_apple * 2 * math.sqrt(state.length):
         state.direction = step_handler(state)
         step_count += 1
 
@@ -40,7 +41,7 @@ def compute_score(step_handler: Callable[[GameState], int]) -> float:
         if not self_intersecting:
             return reward
         elif has_grown:
-            reward += distance_to_apple / step_count
+            reward += distance_to_apple / math.sqrt(step_count) * math.sqrt(state.length)
 
             step_count = 0
             distance_to_apple = state.distance_to_apple()
