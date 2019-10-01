@@ -1,4 +1,5 @@
 import random
+from collections import deque
 
 from game.direction import Directions, GRID_WIDTH, GRID_HEIGHT
 
@@ -10,7 +11,8 @@ class GameState:
 
     def __init__(self, start_pos, length=3) -> None:
         self.length = length
-        self.positions = [start_pos]
+        self.positions = deque()
+        self.positions.append(start_pos)
         for i in range(1, length):
             self.positions.append(Directions.apply(2, self.positions[i - 1]))
 
@@ -32,7 +34,7 @@ class GameState:
 
         # check for self intersection
         self_intersection = new_pos in self.positions
-        self.positions.insert(0, new_pos)
+        self.positions.appendleft(new_pos)
         return not self_intersection
 
     def apple_replace(self):
