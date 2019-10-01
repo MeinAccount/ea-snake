@@ -5,6 +5,8 @@ from game.direction import Board
 from game.state import GameState
 from render import SimpleHandler
 
+global top_score_factor
+top_score_factor = 30
 
 def dnn_to_handler(chromo) -> Callable[[GameState], int]:
     def dnn_handler(state: GameState) -> int:
@@ -21,16 +23,25 @@ def compute_score(step_handler: Callable[[GameState], int]) -> float:
     state = GameState((20, 20))
     # reward = 0
     step_count = 0
-    while step_count <= 1000:
+    global top_score_factor
+    while step_count <= top_score_factor*120:
         state.direction = step_handler(state)
         if not state.move():
-            return state.length
+            return update_top_score_factor(state.length)
 
         # reward += state.length
         step_count += 1
 
-    return state.length
 
+    return update_top_score_factor(state.length)
+
+
+def update_top_score_factor(score):
+    global top_score_factor
+    if score > top_score_factor:
+        top_score_factor = score
+        print("Best: {}".format(top_score_factor))
+    return score
 
 if __name__ == '__main__':
     print(compute_score(SimpleHandler().handle))
