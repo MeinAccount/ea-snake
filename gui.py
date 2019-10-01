@@ -3,15 +3,17 @@ import os
 import dnn_evolution
 import pygame
 from preconditions import preconditions
+from evolution_render import QueueHandler
+from render import App
 
 generation_apps = []
 
 def CurSelect(evt):
     value = str(listNodes.get(listNodes.curselection()))
-    generation_apps[int(value.replace("Generation ",""))].on_execute()
+    generation_apps[int(value.replace("Generation ",""))-1].on_execute()
 
 def insert(app):
-    listNodes.insert("Generation " + str(listNodes.size()+1))
+    listNodes.insert(END,"Generation " + str(listNodes.size()+1))
     generation_apps.append(app)
 
 window = Tk() # create window
@@ -27,5 +29,12 @@ listNodes = Listbox(window,  yscrollcommand=scrollbar.set, font=("Helvetica", 12
 listNodes.pack(expand=True, fill=Y)
 listNodes.bind('<<ListboxSelect>>', CurSelect)
 scrollbar.config(command=listNodes.yview)
-window.mainloop()
+def test(QueueHandler):
+   while True:
+        window.update()
+        QueueHandler.update()
+
+
+
+
 
