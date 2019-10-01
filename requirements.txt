@@ -2,6 +2,5 @@ tflearn
 tensorflow
 pygame
 numpy
-pickle
+pickle-mixin
 pathlib
-
