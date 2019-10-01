@@ -81,8 +81,7 @@ class Evolution:
         scores_for_chromosomes.sort(key=lambda x: x[1])
 
         top_performers = scores_for_chromosomes[-self.parents:]
-        top_scores = [x[1] for x in top_performers]
-        print(top_scores)
+        print([x[1] for x in top_performers])
 
         return top_performers
 
@@ -103,8 +102,3 @@ class Evolution:
     @staticmethod
     def _random_chromosome(n, m):
         return np.random.uniform(-1, 1, (n, m))
-
-
-if __name__ == '__main__':
-    trainer = Evolution()
-    trainer.genetic_evolution()

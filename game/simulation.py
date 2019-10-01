@@ -3,7 +3,6 @@ from typing import Callable
 from ea.dnn import chromo_predict
 from game.direction import Board
 from game.state import GameState
-from render import SimpleHandler
 
 
 def dnn_to_handler(chromo) -> Callable[[GameState], int]:
@@ -30,7 +29,3 @@ def compute_score(step_handler: Callable[[GameState], int]) -> float:
         step_count += 1
 
     return state.length
-
-
-if __name__ == '__main__':
-    print(compute_score(SimpleHandler().handle))
