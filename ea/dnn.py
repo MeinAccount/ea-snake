@@ -5,7 +5,7 @@ import numpy as np
 Chromo = Tuple[np.ndarray, np.ndarray, np.ndarray]
 
 MODEL_FEATURE_COUNT = 7
-MODEL_HIDDEN_NEURONS = 30
+MODEL_HIDDEN_NEURONS = 100
 MODEL_PATH = "dnn_genetic_evolution/gen{}.pickle"
 
 

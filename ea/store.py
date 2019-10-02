@@ -1,9 +1,7 @@
 import pickle
 from os import PathLike
 from pathlib import Path
-from typing import Tuple, List, Union
-
-import numpy as np
+from typing import List, Union
 
 from ea.dnn import MODEL_PATH, Chromo
 
