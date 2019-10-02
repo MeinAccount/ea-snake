@@ -39,12 +39,12 @@ def add_weights_chromo(ch_pop: Tuple[Tuple[np.ndarray, np.ndarray], int]) -> Chr
     (chromo, amount) = ch_pop
     x, y = chromo
     # we need a amount x MODEL_HIDDEN_NEURONS matrix
-    return np.vstack([x, np.random.uniform(-1, 1, (amount, MODEL_HIDDEN_NEURONS))]), \
+    return np.vstack([x, np.zeros((amount, MODEL_HIDDEN_NEURONS))]), \
            np.identity(MODEL_HIDDEN_NEURONS), y
 
 
 def add_weights_to_best(population: List[Tuple[np.ndarray, np.ndarray]], amount: int) -> Iterator[Chromo]:
-    return map(lambda _: add_weights_chromo((population[0], amount)), range(0, 1000))
+    return map(lambda _: add_weights_chromo((population[0], amount)), range(0, 100))
 
 
 if __name__ == "__main__":

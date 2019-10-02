@@ -67,7 +67,7 @@ class App:
 
     def on_execute(self):
         self.on_init()
-        pygame.time.set_timer(EVENT_TICK, 50)
+        pygame.time.set_timer(EVENT_TICK, 20)
 
         running = True
         playing = False
