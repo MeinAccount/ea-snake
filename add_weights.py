@@ -17,7 +17,7 @@ def cli(old_path, new_path, amount):
     if not p.exists():
         click.echo("File does not exist")
     new_pop = add_weights_population(Store.loadFile(p))
-    Store.save(0, new_pop)
+    Store.save(0, new_pop, path=new_path)
     click.echo('Saved new pickle file in {}'.format(new_path))
 
 

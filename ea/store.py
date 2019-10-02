@@ -12,11 +12,12 @@ _folder = Path(MODEL_PATH.format("")[:-10])
 
 class Store:
     @staticmethod
-    def save(generation: Union[int, str], population: List[Tuple[np.ndarray, np.ndarray]]) -> None:
+    def save(generation: Union[int, str], population: List[Tuple[np.ndarray, np.ndarray]], path=None) -> None:
         if not _folder.exists():
             _folder.mkdir(parents=True)
-
-        with open(MODEL_PATH.format(generation), 'wb') as handler:
+        if not path:
+            path = MODEL_PATH.format(generation)
+        with open(path, 'wb') as handler:
             pickle.dump(population, handler)
 
     @staticmethod
