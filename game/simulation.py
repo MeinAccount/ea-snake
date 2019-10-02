@@ -11,9 +11,9 @@ from game.state import GameState
 def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState], int]:
     def dnn_handler(state: GameState) -> int:
         angle = Board.compute_normalized_angle(state.direction, state.positions[0], state.apple_pos)
-        neighbours_free = Board.neighbours_free(state.direction, state.positions)
+        param = Board.neighbours_free(state.direction, state.positions)
 
-        action = chromo_predict(chromo, angle, neighbours_free)
+        action = chromo_predict(chromo, angle, *param)
         return (state.direction + action) % 4
 
     return dnn_handler
