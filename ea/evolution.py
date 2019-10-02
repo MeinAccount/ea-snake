@@ -4,7 +4,7 @@ from typing import List, Callable
 
 import numpy as np
 
-from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS, Chromo
+from ea.dnn import Chromo, random_chromosome
 from ea.store import Store
 from game.simulation import dnn_to_handler, av_score
 
@@ -50,11 +50,12 @@ class Evolution:
                 Store.save(self.generation, population)
 
     @staticmethod
-    def _crossover(x, y):
-        return Evolution._crossover_array(x[0], y[0]), Evolution._crossover_array(x[1], y[1])
+    def _crossover(x: Chromo, y: Chromo) -> Chromo:
+        return Evolution._crossover_array(x[0], y[0]), \
+               Evolution._crossover_array(x[1], y[1]), Evolution._crossover_array(x[2], y[2])
 
     @staticmethod
-    def _crossover_array(x, y):
+    def _crossover_array(x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """crosses two numpy arrays"""
         mask = np.random.choice([True, False], x.shape)
         offspring = copy.deepcopy(x)
@@ -64,9 +65,10 @@ class Evolution:
 
     def _mutation(self, base_offsprings):
         for offspring in base_offsprings:
-            (x, y) = offspring
+            (x, y, z) = offspring
             self._mutate_array(x)
             self._mutate_array(y)
+            self._mutate_array(z)
 
     def _mutate_array(self, array):
         mask = np.random.choice([True, False], array.shape, p=[self.mutation_rate, 1 - self.mutation_rate])
@@ -86,9 +88,4 @@ class Evolution:
         return top_performers
 
     def random_population(self) -> List[Chromo]:
-        return list(map(self._random_chromosome, range(0, self.population_size)))
-
-    @staticmethod
-    def _random_chromosome(_):
-        return (np.random.uniform(-1, 1, (MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS)),
-                np.random.uniform(-1, 1, (MODEL_HIDDEN_NEURONS, 3)))
+        return list(map(random_chromosome, range(0, self.population_size)))
