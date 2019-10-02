@@ -21,11 +21,11 @@ def dnn_to_handler(chromo: Tuple[np.ndarray, np.ndarray]) -> Callable[[GameState
     return dnn_handler
 
 
-def av_score(step_handler: Callable[[GameState], int], amount: int, top_score_factor) -> Tuple[float, int]:
+def av_score(step_handler: Callable[[GameState], int], amount: int, top_score_factor) -> float:
     score = []
     for i in range(amount):
         score.append(compute_score(step_handler, top_score_factor))
-    return update_top_score_factor(sum(score)/len(score), top_score_factor)
+    return sum(score) / len(score)
 
 
 def compute_score(step_handler: Callable[[GameState], int], top_score_factor) -> float:

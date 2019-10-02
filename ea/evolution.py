@@ -20,8 +20,7 @@ class Evolution:
     load_gen = None
     save_mode = False
 
-    top_score_factor = 10
-    old_tsf = 10
+    score_factor = 30
 
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
@@ -51,7 +50,9 @@ class Evolution:
             population.extend(map(lambda t: t[0], chosen_parents))
             self.generation += 1
 
-            Evolution.old_tsf = Evolution.top_score_factor
+            if chosen_parents[-1][1] > self.score_factor:
+                self.score_factor = chosen_parents[-1][1]
+
 
             if self.save_mode:
                 Store.save(self.generation, population)
@@ -80,14 +81,14 @@ class Evolution:
         array[mask] = np.random.uniform(-1, 1, array.shape)[mask]  # TODO: perhaps generate less random data
 
     @staticmethod
-    def _score_chromo(chromo):
-        s, f = av_score(dnn_to_handler(chromo), 3, Evolution.old_tsf)
-        if f > Evolution.top_score_factor:
-            Evolution.top_score_factor = f
+    def _score_chromo(ch_fac):
+        chromo, score_factor = ch_fac
+        s = av_score(dnn_to_handler(chromo), 3, score_factor)
         return chromo, s
 
     def _strongest_parents(self, population):
-        scores_for_chromosomes = self.pool.map(self._score_chromo, population)
+        p = map(lambda x: (x, self.score_factor), population)
+        scores_for_chromosomes = self.pool.map(self._score_chromo, p)
         scores_for_chromosomes.sort(key=lambda x: x[1])
 
         top_performers = scores_for_chromosomes[-self.parents:]
