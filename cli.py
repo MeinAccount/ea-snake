@@ -20,10 +20,13 @@ if __name__ == '__main__':
     trainer.population_size = args.population_size
 
     if args.load_gen is not None:
+        print("Loading population from generation {}".format(args.load_gen))
         population = Store.loadGen(args.load_gen)
     elif args.load_file is not None:
+        print("Loading population from file " + args.load_file)
         population = Store.loadGen(args.load_file)
     else:
+        print("Creating random population")
         population = trainer.random_population()
 
     trainer.save_mode = True

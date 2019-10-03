@@ -1,36 +1,32 @@
 import copy
 import multiprocessing
-from typing import List, Tuple, Callable
+from typing import List, Callable
 
 import numpy as np
 
-from ea.dnn import MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS
+from ea.dnn import Chromo, random_chromosome
 from ea.store import Store
-from game.simulation import dnn_to_handler, compute_score, av_score
-
+from game.simulation import dnn_to_handler, av_score
 
 
 class Evolution:
     generation = 0
     selection_rate = 0.1
     mutation_rate = 0.01
-    population_size = 100
+    population_size = 50
     parents = int(population_size * selection_rate)
 
-    load_gen = None
     save_mode = False
-
-    score_factor = 30
 
     def __init__(self) -> None:
         self.pool = multiprocessing.Pool()
 
-    def genetic_evolution(self, population: List[Tuple[np.ndarray, np.ndarray]],
-                          best_receiver: Callable[[Tuple[np.ndarray, np.ndarray]], None] = lambda x: None) -> None:
+    def genetic_evolution(self, population: List[Chromo],
+                          best_receiver: Callable[[Chromo], None] = lambda x: None) -> None:
         while True:
             population_size = len(population) if population is not None else self.population_size
-            print("generation: " + str(self.generation) + ", population: " + str(
-                population_size) + ", mutation_rate: " + str(self.mutation_rate))
+            print("generation: {0}, population: {1}, mutation_rate: {2}".format(
+                str(self.generation), str(population_size), str(self.mutation_rate)))
 
             # 1. Selection
             chosen_parents = self._strongest_parents(population)
@@ -50,19 +46,15 @@ class Evolution:
             population.extend(map(lambda t: t[0], chosen_parents))
             self.generation += 1
 
-            if chosen_parents[-1][1] > self.score_factor:
-                self.score_factor = chosen_parents[-1][1]
-
-
             if self.save_mode:
                 Store.save(self.generation, population)
 
     @staticmethod
-    def _crossover(x, y):
+    def _crossover(x: Chromo, y: Chromo) -> Chromo:
         return Evolution._crossover_array(x[0], y[0]), Evolution._crossover_array(x[1], y[1])
 
     @staticmethod
-    def _crossover_array(x, y):
+    def _crossover_array(x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """crosses two numpy arrays"""
         mask = np.random.choice([True, False], x.shape)
         offspring = copy.deepcopy(x)
@@ -81,14 +73,11 @@ class Evolution:
         array[mask] = np.random.uniform(-1, 1, array.shape)[mask]  # TODO: perhaps generate less random data
 
     @staticmethod
-    def _score_chromo(ch_fac):
-        chromo, score_factor = ch_fac
-        s = av_score(dnn_to_handler(chromo), 3, score_factor)
-        return chromo, s
+    def _score_chromo(chromo):
+        return chromo, av_score(dnn_to_handler(chromo), 3)
 
     def _strongest_parents(self, population):
-        p = map(lambda x: (x, self.score_factor), population)
-        scores_for_chromosomes = self.pool.map(self._score_chromo, p)
+        scores_for_chromosomes = self.pool.map(self._score_chromo, population)
         scores_for_chromosomes.sort(key=lambda x: x[1])
 
         top_performers = scores_for_chromosomes[-self.parents:]
@@ -96,10 +85,5 @@ class Evolution:
 
         return top_performers
 
-    def random_population(self) -> List[Tuple[np.ndarray, np.ndarray]]:
-        return list(map(self._random_chromosome, range(0, self.population_size)))
-
-    @staticmethod
-    def _random_chromosome(_):
-        return (np.random.uniform(-1, 1, (MODEL_FEATURE_COUNT, MODEL_HIDDEN_NEURONS)),
-                np.random.uniform(-1, 1, (MODEL_HIDDEN_NEURONS, 3)))
+    def random_population(self) -> List[Chromo]:
+        return list(map(random_chromosome, range(0, self.population_size)))
