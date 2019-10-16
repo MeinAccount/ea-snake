@@ -1,6 +1,5 @@
 # Evolutionary Algorithm applied to the Snake Game
 
-This project is a result of Ferienakadmie 2019.
 This project was founded at [Ferienakademie](https://www.ferienakademie.de/) 2019 by [Magnus Kühn](https://github.com/MeinAccount/), [Tobias Jülg](https://github.com/JobiProGrammer)
 and [Paul Andrei Sava](https://github.com/Ancris1337), three members of [Course 1 "Modern Algorithmic: Randomised, Online, Approximative"](https://www.cs12.tf.fau.de/veranstaltungen/ferienakademie-sarntal-2019/).
 
