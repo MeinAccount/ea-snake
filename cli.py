@@ -11,7 +11,8 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--load-file')
     parser.add_argument('-s', '--selection-rate', type=float, default=0.1)
     parser.add_argument('-m', '--mutation-rate', type=float, default=0.01)
-    parser.add_argument('-p', '--population_size', type=int, default=100)
+    parser.add_argument('-p', '--population-size', type=int, default=100)
+    parser.add_argument('-sm', '--save-mode', type=bool, default=True)
     args = parser.parse_args()
 
     trainer = Evolution()
@@ -26,5 +27,5 @@ if __name__ == '__main__':
     else:
         population = trainer.random_population()
 
-    trainer.save_mode = True
+    trainer.save_mode = args.save_mode
     trainer.genetic_evolution(population)
