@@ -30,3 +30,14 @@ class Store:
             chromo = pickle.load(handler)
 
         return chromo
+
+    @staticmethod
+    def loadLatestGen() -> List[Tuple[np.ndarray, np.ndarray]]:
+        max_gen = 0
+        p = Path(_folder)
+        for i in p.iterdir():
+            n = str(i).find(".pickle")
+            gen = int(str(i)[3:n])
+            if max_gen < gen:
+                max_gen = gen
+        return Store.loadGen(max_gen)
