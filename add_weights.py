@@ -7,17 +7,20 @@ from pathlib import Path
 from ea.store import Store
 
 
+# This command line interface can take a population and append it with random wights for the case one want to add
+# new features to the neural network
+
 @click.command()
 @click.argument('old_path', help="Filename for the old pickle file")
 @click.argument('new_path', help="Filename for the new pickle file")
 @click.option('--amount', default=3, help='Amount of random rows added to the matrix')
 def cli(old_path, new_path, amount):
-    """Takes a pickle file and adds amount of rows to the weights matricies of the whole population"""
+    """Takes a pickle file and adds amount of rows to the weights matrices of the whole population"""
     p = Path(old_path)
     if not p.exists():
         click.echo("File does not exist")
-    new_pop = add_weights_population(Store.loadFile(p))
-    Store.save(0, new_pop, path=new_path)
+    new_pop = add_weights_population(Store.loadFile(p), amount)
+    Store.save(0, list(new_pop), path=new_path)
     click.echo('Saved new pickle file in {}'.format(new_path))
 
 
