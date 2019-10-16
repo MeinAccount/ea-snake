@@ -1,31 +1,28 @@
 import pickle
 from os import PathLike
 from pathlib import Path
-from typing import Tuple, List, Union
+from typing import List, Union
 
-import numpy as np
-
-from ea.dnn import MODEL_PATH
+from ea.dnn import MODEL_PATH, Chromo
 
 _folder = Path(MODEL_PATH.format("")[:-10])
 
 
 class Store:
     @staticmethod
-    def save(generation: Union[int, str], population: List[Tuple[np.ndarray, np.ndarray]], path=None) -> None:
+    def save(generation: Union[int, str], population: List[Chromo]) -> None:
         if not _folder.exists():
             _folder.mkdir(parents=True)
-        if not path:
-            path = MODEL_PATH.format(generation)
-        with open(path, 'wb') as handler:
+
+        with open(MODEL_PATH.format(generation), 'wb') as handler:
             pickle.dump(population, handler)
 
     @staticmethod
-    def loadGen(generation: Union[int, str]) -> List[Tuple[np.ndarray, np.ndarray]]:
+    def loadGen(generation: Union[int, str]) -> List[Chromo]:
         return Store.loadFile(Path(MODEL_PATH.format(generation)))
 
     @staticmethod
-    def loadFile(path: PathLike) -> List[Tuple[np.ndarray, np.ndarray]]:
+    def loadFile(path: PathLike) -> List[Chromo]:
         with open(path, 'rb') as handler:
             chromo = pickle.load(handler)
 
