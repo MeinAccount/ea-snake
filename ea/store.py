@@ -1,4 +1,6 @@
+import glob
 import pickle
+import re
 from os import PathLike
 from pathlib import Path
 from typing import List, Union
@@ -29,12 +31,6 @@ class Store:
         return chromo
 
     @staticmethod
-    def loadLatestGen() -> List[Tuple[np.ndarray, np.ndarray]]:
-        max_gen = 0
-        p = Path(_folder)
-        for i in p.iterdir():
-            n = str(i).find(".pickle")
-            gen = int(str(i)[3:n])
-            if max_gen < gen:
-                max_gen = gen
-        return Store.loadGen(max_gen)
+    def getLatestGen() -> int:
+        regex = MODEL_PATH.format('(\\d+)')
+        return max([int(re.match(regex, file).group(1)) for file in glob.glob(MODEL_PATH.format('*'))])

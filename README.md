@@ -65,6 +65,7 @@ usage: cli.py [-h] [-g LOAD_GEN] [-f LOAD_FILE] [-s SELECTION_RATE]
 optional arguments:
   -h, --help            show this help message and exit
   -g LOAD_GEN, --load-gen LOAD_GEN
+  -l, --load-latest
   -f LOAD_FILE, --load-file LOAD_FILE
   -s SELECTION_RATE, --selection-rate SELECTION_RATE
   -m MUTATION_RATE, --mutation-rate MUTATION_RATE
@@ -83,6 +84,7 @@ The program will try to find the corresponding generation .pickle file in the `d
 ### `render.py`
 
 Allows you to pass a path to a specific population file that you want to watch. It will pick the best player out of the population and render it in a gui.
+If no population is specified, the latest will be used.
 
 ![](images/render)
 

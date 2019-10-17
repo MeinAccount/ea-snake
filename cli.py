@@ -8,6 +8,7 @@ from ea.store import Store
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', '--load-gen', type=int)
+    parser.add_argument('-l', '--load-latest', dest='load_latest', action='store_true', default=False)
     parser.add_argument('-f', '--load-file')
     parser.add_argument('-s', '--selection-rate', type=float, default=0.1)
     parser.add_argument('-m', '--mutation-rate', type=float, default=0.01)
@@ -20,9 +21,15 @@ if __name__ == '__main__':
     trainer.mutation_rate = args.mutation_rate
     trainer.population_size = args.population_size
 
-    if args.load_gen is not None:
+    if args.load_latest is True:
+        print("Loading latest generation")
+        gen = Store.getLatestGen()
+        population = Store.loadGen(gen)
+        trainer.generation = gen
+    elif args.load_gen is not None:
         print("Loading population from generation {}".format(args.load_gen))
         population = Store.loadGen(args.load_gen)
+        trainer.generation = args.load_gen
     elif args.load_file is not None:
         print("Loading population from file " + args.load_file)
         population = Store.loadGen(args.load_file)
