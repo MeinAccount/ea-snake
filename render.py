@@ -101,6 +101,6 @@ class App:
 
 
 if __name__ == "__main__":
-    chromo = Store.loadGen(Store.getLatestGen()) if len(sys.argv) < 2 else Store.loadFile(sys.argv[1])[-1]
+    chromo = Store.load_gen(Store.get_latest_gen()) if len(sys.argv) < 2 else Store.load_file(sys.argv[1])[-1]
     app = App(dnn_to_handler(chromo))
     app.on_execute()

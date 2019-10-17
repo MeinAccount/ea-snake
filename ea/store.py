@@ -20,17 +20,17 @@ class Store:
             pickle.dump(population, handler)
 
     @staticmethod
-    def loadGen(generation: Union[int, str]) -> List[Chromo]:
-        return Store.loadFile(Path(MODEL_PATH.format(generation)))
+    def load_gen(generation: Union[int, str]) -> List[Chromo]:
+        return Store.load_file(Path(MODEL_PATH.format(generation)))
 
     @staticmethod
-    def loadFile(path: PathLike) -> List[Chromo]:
+    def load_file(path: PathLike) -> List[Chromo]:
         with open(path, 'rb') as handler:
             chromo = pickle.load(handler)
 
         return chromo
 
     @staticmethod
-    def getLatestGen() -> int:
+    def get_latest_gen() -> int:
         regex = MODEL_PATH.format('(\\d+)')
         return max([int(re.match(regex, file).group(1)) for file in glob.glob(MODEL_PATH.format('*'))])

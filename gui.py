@@ -50,7 +50,7 @@ def load_generations():
     curr_case = 0
     listNodes.delete(0, END)
     for i in range(1, max_generation):
-        test = Store.loadGen(i)
+        test = Store.load_gen(i)
         load_cromosomes.append(test)
         listNodes.insert(END, "Generation " + str(i))
 

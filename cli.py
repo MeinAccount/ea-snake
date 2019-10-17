@@ -23,16 +23,16 @@ if __name__ == '__main__':
 
     if args.load_latest is True:
         print("Loading latest generation")
-        gen = Store.getLatestGen()
-        population = Store.loadGen(gen)
+        gen = Store.get_latest_gen()
+        population = Store.load_gen(gen)
         trainer.generation = gen
     elif args.load_gen is not None:
         print("Loading population from generation {}".format(args.load_gen))
-        population = Store.loadGen(args.load_gen)
+        population = Store.load_gen(args.load_gen)
         trainer.generation = args.load_gen
     elif args.load_file is not None:
         print("Loading population from file " + args.load_file)
-        population = Store.loadGen(args.load_file)
+        population = Store.load_gen(args.load_file)
     else:
         print("Creating random population")
         population = trainer.random_population()
