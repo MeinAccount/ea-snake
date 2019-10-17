@@ -5,7 +5,11 @@ and [Paul Andrei Sava](https://github.com/Ancris1337), three members of [Course 
 
 Since we had a presentation about evolutionary algorithms in that course, we decided to put our learned
 knowledge into practice by developing a neural network that learns to play the game of snake by pure
-evolution.
+evolution. [Video of an example run:](images/example_run.mp4)
+
+<p align="center">
+    <a href="images/example_run.mp4?raw=true"><img src="images/example_run_preview.png" alt="Example Run" /></a>
+</p>
 
 ## Idea
 
@@ -79,14 +83,18 @@ The program will try to find the corresponding generation .pickle file in the `d
 * SELECTION_RATE, MUTATION_RATE and POPULATION_SIZE are parameters for the evolutionary algorithm
 * SAVE_MODE states if you want to save the population after each generation into a .pickle file in the folder `dnn_genetic_algorithm`
 
-![](images/cli)
+<p align="center">
+    <img src="images/cli.png" alt="Screenshot of cli.py in action" />
+</p>
 
 ### `render.py`
 
 Allows you to pass a path to a specific population file that you want to watch. It will pick the best player out of the population and render it in a gui.
 If no population is specified, the latest will be used.
 
-![](images/render)
+<p align="center">
+    <img src="images/render.png" alt="Screenshot of renderer.py in action" />
+</p>
 
 The render window can be controlled with the following keys:
 * p: pause and resume. For example in the beginning you need to press 'p' in order to start the simulation
@@ -98,4 +106,6 @@ The render window can be controlled with the following keys:
 
 Opens a gui and shows the populations in each evolution step, so that you can click on one and it will call the `render.py` on it.
 
-![](images/evolution_render)
+<p align="center">
+    <img src="images/evolution_render.png" alt="Screenshot of evolution_render.py in action" />
+</p>
