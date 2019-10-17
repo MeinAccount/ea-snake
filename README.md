@@ -4,7 +4,7 @@ This project was founded at [Ferienakademie](https://www.ferienakademie.de/) 201
 and [Paul Andrei Sava](https://github.com/Ancris1337), three members of [Course 1 "Modern Algorithmic: Randomised, Online, Approximative"](https://www.cs12.tf.fau.de/veranstaltungen/ferienakademie-sarntal-2019/).
 
 Since we had a presentation about evolutionary algorithms in that course, we decided to put our learned
-knowleged into practice by developing a neural network that learns to play the game of snake by pure
+knowledge into practice by developing a neural network that learns to play the game of snake by pure
 evolution.
 
 ## Idea
@@ -16,7 +16,7 @@ The four input features consist of bool list of whether the three neighbours are
 and the angle of the food relative to the snakes head (Evenly distributed between -1 and 1, 0 means the food is straight ahead).
 
 The three output neurons represent the direction the network wants to go in the next step: left, ahead or right.
-For the decistion the strongest neuron will be taken (argmax). In between the layers we use a ReLu activation function and no bias.
+For the decision the strongest neuron will be taken (argmax). In between the layers we use a ReLu activation function and no bias.
 
 With this setting we come to `4*100 + 100*3 = 700` weights for our fully connected network.
 These weights are set to random in the beginning and therefore have to be trained. But instead of using
@@ -89,7 +89,7 @@ Allows you to pass a path to a specific population file that you want to watch. 
 The render window can be controlled with the following keys:
 * p: pause and resume. For example in the beginning you need to press 'p' in order to start the simulation
 * f: fast mode, to quickly see how far the snake comes.
-* r: resest the simulation
+* r: reset the simulation
 * Esc: end the simulation
 
 ### `evolution_render.py`
